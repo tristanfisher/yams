@@ -1,0 +1,17 @@
+Flask
+Flask-bcrypt
+Flask-CORS
+Flask-Script
+Flask-Login
+Flask-SQLAlchemy
+Flask-Alembic
+Flask-WTF
+boto
+jinja2
+pygments
+itsdangerous
+redis
+
+nose
+requests
+easyos
