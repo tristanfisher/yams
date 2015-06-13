@@ -7,13 +7,6 @@ import string
 import tempfile
 from easyos import easyos
 
-# AFAIK, DEBIAN/UBUNTU doesn't have cpuset support. jump to multiprocessing
-try:
-    num_cpus = multiprocessing.cpu_count()
-except NotImplementedError:
-    num_cpus = os.sysconf("SC_NPROCESSORS_ONLN")
-
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True if easyos["os"] == "Darwin" else False
 
@@ -108,10 +101,5 @@ JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
 
 
-# general assumption of 1/2 for incoming req, other 1/2 for backend
-THREADS_PER_PAGE = num_cpus * 2
-
-
 # Put some of the structured settings back into the scope of the built-in
-
 SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI
