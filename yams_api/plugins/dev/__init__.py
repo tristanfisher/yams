@@ -4,30 +4,28 @@ import os
 from flask import Blueprint
 from flask import g
 from flask import jsonify
-from ..errors import ValidationError, bad_request, not_found
-from config import API
+from ...errors import ValidationError, bad_request, not_found
+from yams_api import core
 from yams_api.api import api
 from yams_api.utils.logger import logfile
 
-dev_bp = Blueprint("dev", __name__)
+dev_bp = Blueprint("plugins", __name__)
 
 from importlib.machinery import SourceFileLoader
 
 _here = os.path.abspath(os.path.dirname(__file__))
-plugins = glob.glob(_here + "/plugins/*/views.py")
-
+plugins = glob.glob(_here + "/*/views.py")
 
 for _p in plugins:
     try:
         _plug_dirname = os.path.split(os.path.split(_p)[0])[1]
 
         # This is ugly: __import__("yams_api.dev.plugins.%s.views" % (_plug_dirname))
-        _mod_name = "%s.views" % (_plug_dirname)
+        _mod_name = "%s.views" % _plug_dirname
         s = SourceFileLoader(_mod_name, _p).load_module()
 
     except ImportError as e:
         logfile.critical("Failed to import module: %s :: %s" % (_p, e))
-
 
 
 # error handling and request behavior
@@ -53,6 +51,7 @@ def after_request(response):
     return response
 
 
+# todo: this is a good candidate for being moved to utils
 # Look at the url_map for the api, picking out the version specific endpoints,
 # then sort them in place.  We do this so we get the prefix from the blueprint.
 # This is in a function because the registration on the "api" Flask object
@@ -69,9 +68,9 @@ def dev_set_endpoints():
     else:
         return dev_endpoints
 
+
 @dev_bp.route("/")
 def dev_index():
-
     return jsonify(dev_endpoints)
 
 
