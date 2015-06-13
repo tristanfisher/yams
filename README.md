@@ -2,6 +2,9 @@
 #### Y(et) A(nother) M(anagement) S(ystem)
 
 
+[![Build Status](https://travis-ci.org/tristanfisher/yams.svg?branch=master)](https://travis-ci.org/tristanfisher/yams)
+
+
 ### What does it do?
 
 YAMS aims to be an easy-to-use extensible interface for maintaining and monitoring system infrastructures.

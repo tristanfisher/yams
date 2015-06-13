@@ -7,13 +7,6 @@ import string
 import tempfile
 from easyos import easyos
 
-# get the number of cpus we have
-try:
-    num_cpus = multiprocessing.cpu_count()
-except NotImplementedError:
-    num_cpus = os.sysconf("SC_NPROCESSORS_ONLN")
-
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True if easyos["os"] == "Darwin" else False
 
@@ -42,6 +35,7 @@ class API:
 
     DATADIR = os.path.join(basedir, "yams_api", "data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
+
 
 
 class AUTH:
@@ -84,7 +78,7 @@ def return_or_make_secret_key(secret_key_file):
             return f.read()
     except IOError:
 
-        log("Creating secret_key file")
+        print("Creating secret_key file")
 
         l = random.randint(25, 50)
         _rand = "".join(random.choice(string.printable) for i in range(l))
@@ -92,9 +86,9 @@ def return_or_make_secret_key(secret_key_file):
             f.write(_rand)
             return f.read()
 
-SECRET_KEY = return_or_make_secret_key(basedir + "secret_key")
-
+SECRET_KEY = return_or_make_secret_key(basedir + "/secret_key")
 SESSION_COOKIE_NAME = "yams_session"
+
 USE_TOKEN_AUTH = True
 WTF_CSRF_ENABLED = not DEBUG
 
@@ -106,11 +100,6 @@ PREFERRED_URL_SCHEME = "https" if DEBUG else "http"
 JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
 
-# AFAIK, DEBIAN/UBUNTU doesn't have cpuset support. jump to multiprocessing
-
-THREADS_PER_PAGE = 8
-
 
 # Put some of the structured settings back into the scope of the built-in
-
 SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI
