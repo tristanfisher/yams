@@ -24,6 +24,8 @@ class APP:
     LISTEN_PORT = 5000
     DEBUG = DEBUG
 
+    API_VERSION_CORE = 'dev'
+    API_VERSION_PLUGINS = 'dev'
     DATADIR = os.path.join(basedir, "yams_api", "data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams.sqlite")
 
@@ -33,9 +35,11 @@ class API:
     LISTEN_PORT = 5001
     DEBUG = DEBUG
 
+    API_VERSION_CORE = 'dev'
+    API_VERSION_PLUGINS = 'dev'
+
     DATADIR = os.path.join(basedir, "yams_api", "data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
-
 
 
 class AUTH:
@@ -96,10 +100,9 @@ WTF_CSRF_ENABLED = not DEBUG
 # http://stackoverflow.com/questions/14810795/flask-url-for-generating-http-url-instead-of-https
 PREFERRED_URL_SCHEME = "https" if DEBUG else "http"
 
-# deal with unicode now, in year 2015.
+# deal with unicode now
 JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
-
 
 # Put some of the structured settings back into the scope of the built-in
 SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI

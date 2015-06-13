@@ -23,7 +23,7 @@ uid_gid_association = db.Table(
 class User(db.Model):
     __tablename__ = "user"
 
-    id = db.Column(db.Integer, primary_key=True)
+    _id = db.Column("id", db.Integer, primary_key=True)
     usercontact_id = db.relationship("UserContact", uselist=False, backref="user")
 
     active = db.Column(db.Boolean, nullable=False, default=False)
@@ -37,7 +37,7 @@ class UserContact(db.Model):
 
     __tablename__ = "user_contact"
 
-    id = db.Column(db.Integer, primary_key=True)
+    _id = db.Column("id", db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     first_name = db.Column(db.String(50), default="", unique=True)
@@ -53,7 +53,7 @@ class UserContact(db.Model):
 
 class Group(db.Model):
     __tablename__ = "group"
-    id = db.Column(db.Integer, primary_key=True)
+    _id = db.Column("id", db.Integer, primary_key=True)
     uid = db.relationship("User", secondary=uid_gid_association, backref="group")
 
     active = db.Column(db.Boolean, nullable=False, default=False)
