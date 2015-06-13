@@ -7,7 +7,7 @@ import string
 import tempfile
 from easyos import easyos
 
-# get the number of cpus we have
+# AFAIK, DEBIAN/UBUNTU doesn't have cpuset support. jump to multiprocessing
 try:
     num_cpus = multiprocessing.cpu_count()
 except NotImplementedError:
@@ -42,6 +42,7 @@ class API:
 
     DATADIR = os.path.join(basedir, "yams_api", "data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
+
 
 
 class AUTH:
@@ -84,7 +85,7 @@ def return_or_make_secret_key(secret_key_file):
             return f.read()
     except IOError:
 
-        log("Creating secret_key file")
+        print("Creating secret_key file")
 
         l = random.randint(25, 50)
         _rand = "".join(random.choice(string.printable) for i in range(l))
@@ -92,9 +93,9 @@ def return_or_make_secret_key(secret_key_file):
             f.write(_rand)
             return f.read()
 
-SECRET_KEY = return_or_make_secret_key(basedir + "secret_key")
-
+SECRET_KEY = return_or_make_secret_key(basedir + "/secret_key")
 SESSION_COOKIE_NAME = "yams_session"
+
 USE_TOKEN_AUTH = True
 WTF_CSRF_ENABLED = not DEBUG
 
@@ -106,9 +107,9 @@ PREFERRED_URL_SCHEME = "https" if DEBUG else "http"
 JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
 
-# AFAIK, DEBIAN/UBUNTU doesn't have cpuset support. jump to multiprocessing
 
-THREADS_PER_PAGE = 8
+# general assumption of 1/2 for incoming req, other 1/2 for backend
+THREADS_PER_PAGE = num_cpus * 2
 
 
 # Put some of the structured settings back into the scope of the built-in
