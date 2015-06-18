@@ -6,6 +6,7 @@ Flask-Login
 Flask-SQLAlchemy
 Flask-Alembic
 Flask-WTF
+Flask-Cache
 boto
 jinja2
 pygments
