@@ -12,15 +12,35 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with YAMS.  If not, see <http://www.gnu.org/licenses/>.
+
 from sys import exit
 import os
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, render_template, g
 from flask import jsonify, redirect, request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import SETUP, APP
 from yams_api.utils.logger import logfile
 
 app = Flask(__name__)
+app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
+navigation_dictionary_list = [{"link": "/", "text": "/index"}]
+
+
+def append_to_navigation_menu(dictionary):
+    navigation_dictionary_list.append(dictionary)
+
+
+@app.context_processor
+def inject_site_name():
+    return dict(site_name=APP.SITE_NAME)
+
+
+@app.context_processor
+def inject_navbar(navigation_dict=navigation_dictionary_list):
+    return dict(navbar_items=navigation_dict)
+
+#app.title = APP.SITE_NAME
+#g.title = APP.SITE_NAME
 db = SQLAlchemy(app)
 
 # Load the version of core specified by the user to pin
@@ -33,4 +53,4 @@ except ImportError as e:
 
 @app.route('/')
 def index():
-    return SETUP.version
+    return render_template("index.html")

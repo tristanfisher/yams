@@ -1,6 +1,4 @@
 import os
-import multiprocessing
-import platform
 import random
 import redis
 import string
@@ -28,6 +26,8 @@ class APP:
     API_VERSION_PLUGINS = 'dev'
     DATADIR = os.path.join(basedir, "yams_api", "data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams.sqlite")
+
+    SITE_NAME = "YAMS"
 
 
 class API:

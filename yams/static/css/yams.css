@@ -1,0 +1,164 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 15px;  /* size of footer */
+    font-family: "Helvetica Neue", Helvetica , Arial, sans-serif;
+}
+
+body a:link, a:visited, a:hover{
+    color: #625B63;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+/* navbar hamburger */
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #BFECFC;
+}
+/* navbar hamburger background-color */
+.navbar-toggle {}
+
+/* navbar hamburger when clicked */
+.navbar-default .navbar-toggle:focus { background-color: #BFECFC; }
+.navbar-default .navbar-toggle:focus .icon-bar { color: #625B63; }
+
+@font-face {
+    font-family: 'marck_scriptregular';
+    src: url('../fonts/marckscript-regular-webfont.eot');
+    src: url('../fonts/marckscript-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/marckscript-regular-webfont.woff2') format('woff2'),
+         url('../fonts/marckscript-regular-webfont.woff') format('woff'),
+         url('../fonts/marckscript-regular-webfont.ttf') format('truetype'),
+         url('../fonts/marckscript-regular-webfont.svg#marck_scriptregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.font-marckscript {
+    font-family: 'marck_scriptregular', Serif;
+}
+
+.font-helvetica {
+    font-family: "Helvetica Neue", Helvetica , Arial, sans-serif;
+}
+
+.title-breadcrumb {
+    display: inline;
+}
+
+#page-content {
+    /* bootstrap navbar is 50px; */
+    margin-top: 50px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 15px;
+}
+
+.footer-engine{
+    font-size:0.7em;
+    margin:0;
+    padding:0;
+}
+
+.a_invert_link a:link, .a_invert_link a:visited, .a_invert_link a:hover{
+    color: #BFECFC;
+}
+
+.navbar-default .navbar-nav>li>a{
+    color: #BFECFC;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+    background-color: #BFECFC;
+    color: #625B63;
+}
+
+#brand {
+    background-color: #625B63;
+    color: #BFECFC;
+}
+
+.vcenter {
+    /* ie11+ - good enough*/
+    display: flex;
+    align-items: center;
+}
+
+.hcenter {
+    margin: 0 auto;
+}
+
+.text-hcenter {
+    text-align: center;
+}
+
+.dark-color {
+    color: #625B63;
+}
+
+.light-color {
+    color: #BFECFC;
+}
+
+.ok {
+    color: #79EA9D;
+}
+
+.warning {
+    color: #FFDE93;
+}
+
+.error {
+    color: #FC8A88;
+}
+
+.bg-dark-color {
+    background-color: #625B63;
+}
+
+.bg-light-color{
+    background-color: #BFECFC;
+}
+
+.bg-ok, .btn-success {
+    background-color: #79EA9D;
+}
+
+.bg-warning, .btn-warning {
+    background-color: #FFDE93;
+}
+
+.bg-error, .btn-danger {
+    background-color: #FC8A88;
+}
+
+.plainlink a {
+    text-decoration: none;
+}
+
+.width_100 {
+    width:100%;
+}
+
+.width_80 {
+    width:80%;
+    min-width: 8em;
+}
+
+/* Checkbox resize: IE10+, FF30+, Chrome27+, Safari5.1+ */
+.bigcheck input[type=checkbox] {
+    transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+}
+
+.bigcheck2x input[type=checkbox] {
+    transform: scale(2);
+    -webkit-transform: scale(2);
+}
