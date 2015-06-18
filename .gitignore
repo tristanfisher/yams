@@ -66,6 +66,6 @@ build/
 
 # YAMS
 yams/static/plugins/custom
-
+secret_key
 # Ansible
 .vault_pass
