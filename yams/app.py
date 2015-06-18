@@ -18,12 +18,14 @@ import os
 from flask import Flask, Blueprint, render_template, g
 from flask import jsonify, redirect, request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
-from config import SETUP, APP
+from config import SETUP, APP, API, PREFERRED_URL_SCHEME
 from yams_api.utils.logger import logfile
+
+API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
 
 app = Flask(__name__)
 app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
-navigation_dictionary_list = [{"link": "/", "text": "/index"}]
+navigation_dictionary_list = [{"link": "/", "text": "/index"}, {"link": API_HOST, "text": "api"}]
 
 
 def append_to_navigation_menu(dictionary):
