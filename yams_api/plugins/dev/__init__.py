@@ -10,6 +10,7 @@ from yams_api.api import api
 from yams_api.utils.logger import logfile
 
 dev_bp = Blueprint("plugins", __name__)
+dev_bp.local_object = {}
 
 from importlib.machinery import SourceFileLoader
 
@@ -72,5 +73,3 @@ def dev_set_endpoints():
 @dev_bp.route("/")
 def dev_index():
     return jsonify(dev_endpoints)
-
-
