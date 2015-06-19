@@ -73,5 +73,3 @@ set_endpoints()
 @api.route("/")
 def endpoints(url_filter=None):
     return jsonify(ep)
-
-
