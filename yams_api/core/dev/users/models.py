@@ -1,5 +1,5 @@
 from datetime import datetime
-from yams.app import db
+from yams_api.api import db
 
 # try to use Flask-SQLAlchemy before heading down this path
 #from sqlalchemy.ext.declarative import declarative_base
@@ -25,6 +25,8 @@ class User(db.Model):
 
     _id = db.Column("id", db.Integer, primary_key=True)
     usercontact_id = db.relationship("UserContact", uselist=False, backref="user")
+
+    password_hash = db.Column(db.String(255), nullable=False)
 
     active = db.Column(db.Boolean, nullable=False, default=False)
     super_admin = db.Column(db.Boolean, default=False)
@@ -59,6 +61,7 @@ class Group(db.Model):
     active = db.Column(db.Boolean, nullable=False, default=False)
     name = db.Column(db.String(100))
     description = db.Column(db.String(500))
+    admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return "<Group %r : %r>" % self.id, self.name

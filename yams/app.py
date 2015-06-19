@@ -23,7 +23,10 @@ from yams_api.utils.logger import logfile
 
 app = Flask(__name__)
 app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
-db = SQLAlchemy(app)
+
+# this should only be used for db operations related to the web interface.
+# if you are associating models with this, you more than likely want the API DB.
+app_db = SQLAlchemy(app)
 
 navigation_dictionary_list = [{"link": "/", "text": "/index"}]
 
