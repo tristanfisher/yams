@@ -23,6 +23,8 @@ from yams_api.utils.logger import logfile
 
 app = Flask(__name__)
 app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
+db = SQLAlchemy(app)
+
 navigation_dictionary_list = [{"link": "/", "text": "/index"}]
 
 
@@ -39,9 +41,7 @@ def inject_site_name():
 def inject_navbar(navigation_dict=navigation_dictionary_list):
     return dict(navbar_items=navigation_dict)
 
-#app.title = APP.SITE_NAME
-#g.title = APP.SITE_NAME
-db = SQLAlchemy(app)
+
 
 # Load the version of core specified by the user to pin
 try:
