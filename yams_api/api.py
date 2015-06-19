@@ -1,7 +1,12 @@
 from flask import Flask, jsonify
 from config import API
 from .errors import bad_request, not_found, ValidationError
+from flask.ext.sqlalchemy import SQLAlchemy
+
+
 api = Flask(__name__)
+db = SQLAlchemy(api)
+
 
 from yams_api.core.dev import core_bp, core_set_endpoints
 from yams_api.plugins.dev import dev_bp, dev_set_endpoints
