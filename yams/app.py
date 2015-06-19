@@ -25,7 +25,6 @@ API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_POR
 
 app = Flask(__name__)
 app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
-<<<<<<< HEAD
 
 # this should only be used for db operations related to the web interface.
 # if you are associating models with this, you more than likely want the API DB.
