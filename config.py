@@ -42,6 +42,15 @@ class API:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
 
 
+    # If we have redis, we have rate limiting available
+    try:
+        r = redis.Redis()
+        r.ping()
+        USE_RATE_LIMITS = True
+    except redis.ConnectionError:
+        USE_RATE_LIMITS = False
+
+
 class AUTH:
     GOOGLE = {
         'id': '_x',
@@ -55,16 +64,8 @@ class TEST:
 
 
 class SETUP:
-    version = "0.01-nightly"
-
-
-# If we have redis, we have rate limiting available
-try:
-    r = redis.Redis()
-    r.ping()
-    USE_RATE_LIMITS = True
-except redis.ConnectionError:
-    USE_RATE_LIMITS = False
+    from version import version
+    version = version
 
 
 ########################################################
