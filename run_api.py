@@ -2,7 +2,7 @@ import os
 from yams_api import api
 from config import API
 
-api.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
+api.config.from_object(os.environ.get("FLASK_API_CONFIG") or "config")
 api.jinja_env.trim_blocks = True
 api.jinja_env.lstrip_blocks = True
 
