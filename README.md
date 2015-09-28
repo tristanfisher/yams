@@ -1,20 +1,27 @@
 # YAMS 
 #### Y(et) A(nother) M(anagement) S(ystem)
 
-
 [![Build Status](https://travis-ci.org/tristanfisher/yams.svg?branch=master)](https://travis-ci.org/tristanfisher/yams)
-
 
 ### What does it do?
 
 YAMS aims to be an easy-to-use extensible interface for maintaining and monitoring system infrastructures.
 
+### Installation
 
-### Usage
+YAMS relies on Python 3.5 and runs on Linux or OS X.  Activate a virtual environment and install the requirements from the requirements.txt.
 
-YAMS runs on TCP port 5000 for the web interface and (optionally) TCP port 5001 for the stand-alone API.  Over time, the YAMS front-end will likely depend on the YAMS API running.
+### Communication
 
-While running on the built-in development server is fine for feature development or very small installations, the use of uWSGI and a reverse proxy (such as via nginx) is heavily recommended.
+YAMS runs on the following ports:
+
+| Port 	| Transport Protocol 	| Application Protocol 	| Usage           	|
+|------	|--------------------	|----------------------	|-----------------	|
+| 1110 	| TCP                	| HTTP(S)              	| YAMS Frontend   	|
+| 1111 	| TCP                	| HTTP(S)              	| YAMS REST API   	|
+| 1112 	| UDP/TCP            	| YAMS Socket          	| YAMS Socket API 	|
+
+While running on the built-in development server is fine for feature development or very small installations, the use of uWSGI and a reverse proxy (such as via nginx) is heavily recommended.  This is also the preferred method of running YAMS on more predictable ports, such as TCP:443 for the YAMS frontend.
 
 ### Project Layout/Architecture
 
