@@ -7,7 +7,7 @@ from flask import jsonify
 from ...errors import ValidationError, bad_request, not_found
 from yams_api import core
 from yams_api.api import api
-from yams_api.utils.logger import logfile
+from yams_api.utils.logger import log
 
 dev_bp = Blueprint("plugins", __name__)
 dev_bp.local_object = {}
@@ -26,7 +26,7 @@ for _p in plugins:
         s = SourceFileLoader(_mod_name, _p).load_module()
 
     except ImportError as e:
-        logfile.critical("Failed to import module: %s :: %s" % (_p, e))
+        log.critical("Failed to import module: %s :: %s" % (_p, e))
 
 
 # error handling and request behavior
