@@ -18,8 +18,10 @@ class Internal():
 
 
 class APP:
+
     LISTEN_HOST = "127.0.0.1"
-    LISTEN_PORT = 5000
+    LISTEN_PORT = 1110
+
     DEBUG = DEBUG
 
     API_VERSION_CORE = 'dev'
@@ -31,8 +33,11 @@ class APP:
 
 
 class API:
+
     LISTEN_HOST = "127.0.0.1"
-    LISTEN_PORT = 5001
+    LISTEN_PORT = 1111
+    LISTEN_PORT_SOCKET = 1112
+
     DEBUG = DEBUG
 
     API_VERSION_CORE = 'dev'
