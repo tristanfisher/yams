@@ -19,7 +19,7 @@ from flask import Flask, Blueprint, render_template, g
 from flask import jsonify, redirect, request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import SETUP, APP, API, PREFERRED_URL_SCHEME
-from yams_api.utils.logger import logfile
+from yams_api.utils.logger import log
 
 API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
 
@@ -59,7 +59,7 @@ def inject_navbar(navigation_dict=navigation_dictionary_list):
 try:
     __import__("yams_api.core.%s" % APP.API_VERSION_CORE)
 except ImportError as e:
-    logfile.critical("Failed to load core version: %s" % e)
+    log.critical("Failed to load core version: %s" % e)
     exit(1)
 
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from ...errors import ValidationError, bad_request, not_found, unauthorized
 from yams_api.api import api
-from yams_api.utils.logger import logfile
+from yams_api.utils.logger import log
 # resist the urge to do the glob + load approach from plugins
 
 core_bp = Blueprint("core", __name__)

@@ -1,60 +1,85 @@
 import logging
 import logging.handlers
+from logging import Formatter
 import socket
 import time
 import sys
-
 import config
+from easyos import easyos
 
 logging.Formatter.converter = time.gmtime
-hostname = socket.gethostname
+hostname = socket.gethostname()
 
-# I think adding a ContextFilter obj to every request is wasteful overhead
-# class ContextFilter(logging.Filter):
-#     """Inject contextual information into the log."""
-#     hostname = hostname
-#
-#     def filter(self, record):
-#         record.hostname = ContextFilter.hostname
-#         return True
-# ctf = ContextFilter()
-# syslogger.addFilter(ctf)
+class ContextFilter(logging.Filter):
+    """Inject contextual information into the log."""
 
+    def filter(self, record):
+        record.HOSTNAME = hostname
+        return True
 
-LOG_LEVEL = getattr(logging, 'DEBUG' if config.DEBUG else 'INFO')
+syslog_ctf = ContextFilter()
 
-class Logger(object):
+# formatters:
+# https://docs.python.org/3/library/logging.html#logrecord-attributes
 
-    def __init__(self, log_level=LOG_LEVEL):
+class Logger:
 
-        self.syslogger = logging.getLogger('syslog')
+    def __init__(self, formatter=None, log_level=config.DEFAULT_LOG_LEVEL, syslog_address="/dev/log"):
+
+        if config.DEBUG and not formatter:
+            self.formatter = Formatter("%(asctime)s - %(filename)s - %(levelname)s - %(message)s")
+        elif not formatter:
+            self.formatter = Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        else:
+            self.formatter = formatter
+
+        if not isinstance(getattr(logging, log_level.upper(), None), int):
+            raise ValueError("Invalid log level: %s" % log_level)
+
+        self.logger = logging.getLogger("yams")
+        self.logger.setLevel(log_level)
+
+        # stdout Console Handler
+        self.ch = logging.StreamHandler(sys.stdout)
+        self.ch.setLevel(log_level)
+        self.ch.setFormatter(self.formatter)
+
+        # https://docs.python.org/3/howto/logging.html#useful-handlers
+        self.syslogger = logging.getLogger("syslog")
         self.syslogger.setLevel(log_level)
 
-        self.default_handler = logging.StreamHandler(sys.stdout)
-        self.default_handler.setLevel(log_level)
-
-        if config.DEBUG:
-            formatter = logging.Formatter('%(filename)s - %(levelname)s - %(message)s')
-        else:
-            formatter = logging.Formatter('%(levelname)s - %(message)s')
-        self.default_handler.setFormatter(formatter)
-
         try:
-            self.syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
-            self.syslog_handler.formatter = logging.Formatter('%(asctime)s %(hostname)s APP: %(message)s',
-                                                              datefmt='%b %d %H:%M:%S')
+            self.syslog_handler = logging.handlers.SysLogHandler(address=syslog_address)
+            self.syslog_handler.setFormatter(Formatter("%(asctime)s - host:%(HOSTNAME)s - %(name)s - %(levelname)s - %(message)s"))
+            self.syslog_handler.addFilter(syslog_ctf)
+
             self.syslogger.addHandler(self.syslog_handler)
+            self.logger.addHandler(self.syslog_handler)
+
         except FileNotFoundError as e:
-            print("LOGGER:: " + str(e))
+            print("LOGGER :: Logging to syslog via '%s' failed: %s" % (
+                str(syslog_address), str(e))
+            )
+
+        # if we're in debug mode, allow printing to stdout
+        if config.DEBUG:
+            self.logger.addHandler(self.ch)
 
     @property
-    def logger(self):
+    def syslog(self):
         return self.syslogger
 
 
-log = Logger()
-logfile = log.logger
+if easyos["os"] == "Darwin":
+    l = Logger(syslog_address="/var/run/syslog")
+else:
+    # or if network: syslog_address=("localhost", 514)
+    l = Logger()
+
+syslog = l.syslog # in case we want to send something only to syslog
+log = l.logger
 
 
-if __name__ == '__main__':
-    logfile.info('test')
+if __name__ == "__main__":
+    #syslog.debug("Testing syslog.")
+    log.debug("Testing logger.")
