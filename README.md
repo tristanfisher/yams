@@ -9,7 +9,7 @@ YAMS aims to be an easy-to-use extensible interface for maintaining and monitori
 
 You can picture its place in your infrastructure in the following way:
 
-![API and web users talking to YAMS. YAMS is a view of data from the API. YAMS API talks to remote APIs and presents a consistent API](https://raw.github.com/tristanfisher/perekhod/master/yams_architecture.png)
+![API and web users talking to YAMS. YAMS is a view of data from the API. YAMS API talks to remote APIs and presents a consistent API](https://raw.github.com/tristanfisher/yams/master/yams_architecture.png)
 
 
 ### Installation
