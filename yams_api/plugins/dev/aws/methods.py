@@ -37,7 +37,7 @@ class AWSResource:
         conn = conn.get_only_instances(filters={"instance_id": self.resource})
 
         #todo: all attrs by default and allow filtering as a class attribute
-        response  = ["%s : %s" % (i.tags["Name"], i.dns_name) for i in conn]
+        response = ["%s : %s" % (i.tags["Name"], i.dns_name) for i in conn]
 
         # instance_list.append({"count": len(instance_list)})
         # can be json
