@@ -8,7 +8,7 @@ public_resource = methods.AWSPublicResource()
 
 # todo: bind a connection for the proper region.
 # todo: show documentation on get to /aws or /aws/
-@dev_bp.route('/aws')
+@dev_bp.route('/aws/')
 def aws():
     return jsonify(status="ok")
 

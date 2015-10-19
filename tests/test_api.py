@@ -23,7 +23,7 @@ class TestAPIStatus(unittest.TestCase):
         self.app_context.pop()
 
     def test_status_endpoint(self):
-        resp = self.client.get("/status")
+        resp = self.client.get("/status/")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.mimetype, 'application/json')
 

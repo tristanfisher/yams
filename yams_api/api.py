@@ -50,7 +50,7 @@ def not_found_error(e):
     return not_found("route not found")
 
 
-@api.route("/status")
+@api.route("/status/")
 def status():
     return jsonify(status="ok",
                    api_version_core=API.API_VERSION_CORE,

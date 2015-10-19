@@ -7,7 +7,7 @@ from yams_api.plugins.dev.aws.methods import AWSPublicResource
 class TestAWSAPI(TestAPIStatus):
 
     def test_aws_endpoint_reachable(self):
-        resp = self.client.get("/plugins/aws")
+        resp = self.client.get("/plugins/aws/")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.mimetype, 'application/json')
 
@@ -18,7 +18,7 @@ class TestAWSAPI(TestAPIStatus):
     def test_aws_endpoint_server_error(self):
 
         with self.assertRaises(Exception):
-            resp = self.client.get("/plugins/aws")
+            resp = self.client.get("/plugins/aws/")
         self.assertEqual(resp.status_code, 500)
         self.assertEqual(resp.mimetype, 'application/json')
 
