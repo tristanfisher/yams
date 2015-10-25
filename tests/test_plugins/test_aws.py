@@ -26,8 +26,9 @@ class TestAWSAPI(TestAPIStatus):
 
     @patch('yams_api.plugins.dev.aws.views.methods.AWSResource')
     def test_aws_ec2_awsresource_returns_successfully(self, m_methods):
-        m_methods.AWSResource.return_value = Mock()
-        m_methods.return_value.get_resource.return_value = "my_resource"
+        m_aws_obj = Mock()
+        m_methods.return_value = m_aws_obj
+        m_aws_obj.get_resource.return_value = "my_resource"
 
         resp = self.client.get("/plugins/aws/ec2/some_resource")
 
@@ -43,7 +44,6 @@ class TestAWSAPI(TestAPIStatus):
 
     @patch.object(AWSPublicResource, 'get_aws_endpoint_status')
     def test_aws_ec2_awspublicresource_returns_successfully(self, m_obj):
-
         m_obj.return_value = "running"
 
         resp = self.client.get("/plugins/aws/status")
