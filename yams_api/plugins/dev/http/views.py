@@ -9,7 +9,6 @@ def http():
 
 # todo: usage on route /http/replay/
 
-
 # from requests import get, head, post, patch, put, delete, options
 @dev_bp.route("/http/replay/<method>", methods=["POST", "GET", "PUT", "OPTIONS"])
 def http_replay(method):

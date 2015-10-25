@@ -17,13 +17,14 @@ def aws():
 def aws_ec2_item(resource):
 
     # todo: split on the query string/filters
+
     # request.query_string for all, request.args.get('') for one
     try:
         resp = methods.AWSResource(resource, filter=request.query_string)
         resp = resp.get_resource()
         code = 200
 
-    except Exception as e:
+    except (Exception) as e:
         # todo: implement a more responsible exception process
         resp = "error"
         code = 500
@@ -42,6 +43,7 @@ def aws_ec2_quick_tag(tag_key, tag_value):
 
 @dev_bp.route('/aws/status')
 def aws_status():
+
     # todo: do async call to get status
     _resp = public_resource.get_aws_endpoint_status()
 
