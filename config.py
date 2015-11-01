@@ -36,7 +36,19 @@ class API:
 
     LISTEN_HOST = "127.0.0.1"
     LISTEN_PORT = 1111
+
+    # ----------------------------------------- #
+    # ---- Socket API ---- #
     LISTEN_PORT_SOCKET = 1112
+
+    # Yield epsilon is to avoid busy-waiting.  0 denotes yielding to any ready thread.  See scheduler docs.
+    # I've found 0 to fully utilize a core, so defaults to a longer interval to save electricity.
+    YIELD_TO_READY_THREADS=0
+    SOCKET_THREAD_YIELD_EPSILON = 0.25
+    SOCKET_TIMEOUT_SECONDS = 30
+    SOCKET_RX_BUFFER_BYTES = 4096
+
+    # ----------------------------------------- #
 
     DEBUG = DEBUG
 
