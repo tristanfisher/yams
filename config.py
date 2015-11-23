@@ -4,6 +4,9 @@ import redis
 import string
 import tempfile
 from easyos import easyos
+from config_loader import chain_load_setting
+
+# chain_load_setting goes in order of envvar, settings file, default.  chain_load_setting(config_file_option, envvar, default)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True if easyos["os"] == "Darwin" else False
@@ -19,27 +22,31 @@ class Internal():
 
 class APP:
 
-    LISTEN_HOST = "127.0.0.1"
-    LISTEN_PORT = 1110
+    LISTEN_HOST = chain_load_setting("APP_HOST", "YAMS_APP_HOST", "127.0.0.1")
+    LISTEN_PORT = chain_load_setting("APP_PORT", "YAMS_APP_PORT", default=1110)
 
     DEBUG = DEBUG
 
-    API_VERSION_CORE = 'dev'
-    API_VERSION_PLUGINS = 'dev'
-    DATADIR = os.path.join(basedir, "yams_api", "data")
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams.sqlite")
+    API_VERSION_CORE = chain_load_setting("API_VERSION_CORE", "YAMS_API_VERSION_CORE", default="dev")
+    API_VERSION_PLUGINS = chain_load_setting("API_VERSION_PLUGINS", "YAMS_API_VERSION_PLUGINS", default="dev")
 
-    SITE_NAME = "YAMS"
+    default_datadir = os.path.join(basedir, "yams_api", "data")
+    DATADIR = chain_load_setting("API_DATADIR", "YAMS_API_DATADIR", default=default_datadir)
+
+    default_database = "sqlite:///" + os.path.join(basedir, "yams.sqlite")
+    SQLALCHEMY_DATABASE_URI = chain_load_setting("APP_DATABASE_URI", "YAMS_APP_DATABASE_URI", default=default_database)
+
+    SITE_NAME = chain_load_setting("APP_REBRANDING_NAME", "YAMS_REBRANDING_NAME", default="YAMS")
 
 
 class API:
 
-    LISTEN_HOST = "127.0.0.1"
-    LISTEN_PORT = 1111
+    LISTEN_HOST = chain_load_setting("API_HOST", "YAMS_API_HOST", "127.0.0.1")
+    LISTEN_PORT = chain_load_setting("API_PORT", "YAMS_API_PORT", default=1111)
 
     # ----------------------------------------- #
     # ---- Socket API ---- #
-    LISTEN_PORT_SOCKET = 1112
+    LISTEN_PORT_SOCKET = chain_load_setting("API_SOCKET_PORT", "YAMS_API_SOCKET_PORT", default=1112)
 
     # Yield epsilon is to avoid busy-waiting.  0 denotes yielding to any ready thread.  See scheduler docs.
     # I've found 0 to fully utilize a core, so defaults to a longer interval to save electricity.
@@ -52,11 +59,14 @@ class API:
 
     DEBUG = DEBUG
 
-    API_VERSION_CORE = 'dev'
-    API_VERSION_PLUGINS = 'dev'
+    API_VERSION_CORE = chain_load_setting("API_VERSION_CORE", "YAMS_API_VERSION_CORE", default="dev")
+    API_VERSION_PLUGINS = chain_load_setting("API_VERSION_PLUGINS", "YAMS_API_VERSION_PLUGINS", default="dev")
 
-    DATADIR = os.path.join(basedir, "yams_api", "data")
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
+    default_datadir = os.path.join(basedir, "yams_api", "data")
+    DATADIR = chain_load_setting("API_DATADIR", "YAMS_API_DATADIR", default=default_datadir)
+
+    default_database = "sqlite:///" + os.path.join(basedir, "yams_api.sqlite")
+    SQLALCHEMY_DATABASE_URI = chain_load_setting("API_DATABASE_URI", "YAMS_API_DATABASE_URI", default=default_database)
 
 
     # If we have redis, we have rate limiting available
@@ -114,9 +124,9 @@ SESSION_COOKIE_NAME = "yams_session"
 USE_TOKEN_AUTH = True
 WTF_CSRF_ENABLED = not DEBUG
 
-# https for url_for, etc. otherwise, _scheme="https" can be passed to url_for
+# https for url_for, etc. otherwise, _scheme="https" can be passed to url_for.  You are reverse-proxying, right?
 # http://stackoverflow.com/questions/14810795/flask-url-for-generating-http-url-instead-of-https
-PREFERRED_URL_SCHEME = "http" if DEBUG else "http"
+PREFERRED_URL_SCHEME = chain_load_setting("PREFERRED_URL_SCHEME", "YAMS_PREFERRED_URL_SCHEME", "http")
 
 # deal with unicode now
 JSON_AS_ASCII = False

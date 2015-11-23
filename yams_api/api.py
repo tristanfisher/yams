@@ -53,6 +53,7 @@ def not_found_error(e):
 @api.route("/status/")
 def status():
     return jsonify(status="ok",
+                   powered_by="yams",
                    api_version_core=API.API_VERSION_CORE,
                    api_version_api=API.API_VERSION_PLUGINS)
 
