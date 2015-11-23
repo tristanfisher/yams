@@ -41,22 +41,3 @@ def chain_load_setting(config_file_option, envvar, default):
     value = os.getenv(envvar, value)
 
     return value
-
-
-# SETTING_LOG_LEVEL = chain_load_setting('LOG_LEVEL', 'YAMA_LOG_LEVEL', default='ERROR')
-# SETTING_DEBUG = chain_load_setting('DEBUG', 'YAMA_DEBUG', default=False)
-#
-# SETTING_YAMS_HOST = chain_load_setting('YAMS_HOST', 'YAMA_YAMS_HOST', default='127.0.0.1')
-# SETTING_YAMS_PORT = chain_load_setting('YAMS_PORT', 'YAMA_YAMS_PORT', default=1112)
-# SETTING_YAMS_TIMEOUT = chain_load_setting('SOCKET_TIMEOUT', 'YAMA_SOCKET_TIMEOUT', default=15)
-#
-# SETTING_YAMS_VERIFY_SSL = chain_load_setting('VERIFY_SSL', 'YAMA_VERIFY_SSL', (not SETTING_DEBUG))
-#
-# # Avoid busy-waiting.
-# # A value of 0 denotes "yield to any other ready thread," but otherwise go go go.
-# # I've found this to be CPU intensive (eventually running up to a full core -- wasting electricity), but leaving as a
-# # named var in case a host runs YAMA as its primary purpose and the default is "laggy"
-# YIELD_TO_READY_THREADS=0
-# SETTING_YAMS_THREAD_YIELD_EPSILON = chain_load_setting('YAMA_THREAD_YIELD_EPSILON', 'YAMA_THREAD_YIELD_EPSILON', default=0.5)
-#
-# VERSION = '0.0.1a'
