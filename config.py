@@ -78,11 +78,13 @@ class API:
         USE_RATE_LIMITS = False
 
 
-class AUTH:
-    GOOGLE = {
-        'id': '_x',
-        'secret': '_y'
-    }
+class ThirdParty:
+
+    # Envvars probably from a .profile or vars injected in the startup script (e.g. export aws_access_key_id='xxx')
+    # You can set ~/.aws/credentials to aws_access_key_id = ${AWS_ACCESS_KEY_ID}, etc.
+    AWS_ACCESS_KEY_ID = chain_load_setting("AWS_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID", None)
+    AWS_SECRET_ACCESS_KEY = chain_load_setting("AWS_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY", None)
+    AWS_DEFAULT_REGION = 'us-east-1'
 
 
 class TEST:

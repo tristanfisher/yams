@@ -10,12 +10,21 @@ import json
 from boto import connect_ec2, connect_s3, connect_vpc
 from lxml.html import fromstring as html_string
 
+from config import ThirdParty
+
+ACCESS_KEY = ThirdParty.AWS_ACCESS_KEY_ID
+SECRET_KEY = ThirdParty.AWS_SECRET_ACCESS_KEY
+
+
 class AWSResource:
 
     def __init__(self, resource=None, region=None, filter=None, attribute=None):
 
         self.resource = resource
-        self.region = region if region else yams_api.api.config["AWS"].REGION
+        if not region:
+            region = 'us-east-1'
+        self.region = region
+        self.match_all_param = ['*', '%', 'all']
         self.filter = filter
         self.attribute = attribute
         self.conn_methods = {
@@ -23,6 +32,7 @@ class AWSResource:
             "s3": connect_s3,
             "vpc": connect_vpc
         }
+
 
     def __repr__(self):
         return "<AWSResource: '{}'>".format(self.resource)
@@ -46,7 +56,108 @@ class AWSResource:
     def response(self):
         return jsonify(ok="not implemented")
 
+
 # http://boto.readthedocs.org/en/latest/boto_config_tut.html  if permission denied, set this.
+class AWSPrivateResource(AWSResource):
+
+    def __init__(self, resource=None, ec2_connection=None, access_key=ACCESS_KEY, secret_key=SECRET_KEY):
+        self.resource = resource
+        self._ec2_connection = ec2_connection
+        super().__init__(resource=resource)
+
+        # boto.connect_ec2()
+        self.errors = []
+
+        self.resource_regional_connection_method_table = {
+            "ec2": boto.ec2.connect_to_region
+        }
+
+        self.resource_connection_method_table = {
+            "s3": boto.connect_s3,
+            "vpc": boto.connect_vpc
+        }
+
+        # structure is:
+        # for regional connections      => [resource][region]:connection
+        self.aws_connections = dict()
+        for _regional_resource in self.resource_regional_connection_method_table:
+            self.aws_connections[_regional_resource] = {}
+            # unneeded, but here's why we built this structure:
+            self.aws_connections[_regional_resource][self.region] = None
+
+        # for non-regional connections  => [resource]:connection
+        for _resource in self.resource_connection_method_table:
+            self.aws_connections[_resource] = None
+
+        self.access_key = access_key
+        self.secret_key = secret_key
+        self.credentials_are_set = bool(self.access_key) and bool(self.secret_key)
+
+
+    # ------------------------------------------------------------------------ #
+    # Connection get/set
+    # -- this could all deal with more exception handling --
+
+    @property
+    def ec2_connection(self, region=None):
+        if not region:
+            region = self.region
+
+        # return the default region connection for the object
+        return self.aws_connections['ec2'][region]
+
+    def get_ec2_connection(self, resource, region_name=None):
+        if not region_name:
+            region = self.region
+
+        if resource in self.resource_regional_connection_method_table:
+            return self.aws_connections[region]
+        else:
+            return self.aws_connections[resource][region]
+
+
+    # no point in making this a normal property setter, it will usually be called without params
+    def set_ec2_connection(self, resource="ec2", ec2_conn=None, region=None, access_key=None, secret_key=None):
+
+        # if we were handed a connection object and a region, bind it.
+        if ec2_conn and region:
+            self.aws_connections[region] = ec2_conn
+
+        if not region:
+            region = self.region
+
+        if not (access_key and secret_key):
+            if self.credentials_are_set:
+                access_key = self.access_key
+                secret_key = self.secret_key
+
+        if bool(access_key) and bool(secret_key):
+
+            if resource in self.resource_regional_connection_method_table:
+                _conn_method = self.resource_regional_connection_method_table[resource]
+                self.aws_connections[resource][region] = _conn_method(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+
+            else:
+                try:
+                    _conn_method = self.resource_connection_method_table[resource]
+                    self.aws_connections[resource] = _conn_method(aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+
+                except KeyError:
+                    self.errors.append("Unknown connection method for %s.  "
+                                       "Check your typing and/or issue a feature request." % resource)
+
+            return True
+
+        else:
+            self.errors.append("Could not create a connection to EC2.  Missing access/secret key or both.")
+            return False
+
+
+    # ------------------------------------------------------------------------ #
+
+    def get_all_instance_status(self):
+        statuses = self.ec2_connection.get_all_instance_status()
+        return statuses
 
 
 class AWSPublicResource:
@@ -189,3 +300,7 @@ class AWSPublicResource:
             _resp["response"] = rt
 
         return _resp
+
+
+def get_all_instance_status():
+    _aws_resource = AWSPrivateResource
