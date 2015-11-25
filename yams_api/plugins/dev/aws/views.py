@@ -1,12 +1,11 @@
 from flask import jsonify, request
 from yams_api.plugins.dev import dev_bp
 from yams_api.plugins.dev.aws import methods
-from config import DEBUG
+from config import DEBUG, ThirdParty
 
 # bind a public resource object here so we don't pay every time
 public_resource = methods.AWSPublicResource()
 
-# todo: bind a connection for the proper region.
 # todo: show documentation on get to /aws or /aws/
 @dev_bp.route('/aws/')
 def aws():
@@ -41,10 +40,25 @@ def aws_ec2_quick_tag(tag_key, tag_value):
     pass
 
 
-@dev_bp.route('/aws/status')
-def aws_status():
+@dev_bp.route('/aws/status', defaults={'path': ''})
+@dev_bp.route('/aws/status/<path:path>')
+def aws_status(path):
 
-    # todo: do async call to get status
-    _resp = public_resource.get_aws_endpoint_status()
+    # AWSPrivateResource gets regions and access credentials as needed from config
+    private_resource = methods.AWSPrivateResource()
 
-    return jsonify(response=_resp)
+    status_endpoint_function_table = {
+        "instance_notifications": private_resource.get_all_instance_notifications
+    }
+
+    if not path:
+        _resp = public_resource.get_aws_endpoint_status()
+        return jsonify(response=_resp)
+
+    _function = status_endpoint_function_table.get(path, None)
+    if _function:
+        _response = _function()
+    else:
+        _response = ()
+
+    return jsonify(response=_response)

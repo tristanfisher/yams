@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from yams_api import api
 from yams_api import tcpsocket
