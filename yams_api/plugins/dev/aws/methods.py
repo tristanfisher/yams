@@ -6,6 +6,8 @@ from boto.exception import NoAuthHandlerFound
 import yams_api.api
 import requests
 import json
+import re
+from yams_api.utils.logger import log
 
 from boto import connect_ec2, connect_s3, connect_vpc
 from lxml.html import fromstring as html_string
@@ -32,6 +34,8 @@ class AWSResource:
             "s3": connect_s3,
             "vpc": connect_vpc
         }
+        # our own little traceback stack. how cute.
+        self.errors = []
 
 
     def __repr__(self):
@@ -53,6 +57,14 @@ class AWSResource:
         # can be json
         return response
 
+    # ------------------------------------------------------------------------ #
+    # maybe refactor these to properties so setter appends, deleter clears to empty list
+    def get_error_list(self):
+        return self.errors
+
+    def clear_error_list(self):
+        self.errors = []
+
     def response(self):
         return jsonify(ok="not implemented")
 
@@ -64,9 +76,6 @@ class AWSPrivateResource(AWSResource):
         self.resource = resource
         self._ec2_connection = ec2_connection
         super().__init__(resource=resource)
-
-        # boto.connect_ec2()
-        self.errors = []
 
         self.resource_regional_connection_method_table = {
             "ec2": boto.ec2.connect_to_region
@@ -100,25 +109,41 @@ class AWSPrivateResource(AWSResource):
 
     @property
     def ec2_connection(self, region=None):
+
+        # return the default region connection for the object
         if not region:
             region = self.region
 
-        # return the default region connection for the object
-        return self.aws_connections['ec2'][region]
+        _ = self.aws_connections['ec2'].get(region)
+        if not _:
+            if self.set_ec2_connection(resource="ec2", region=region):
+                _ = self.aws_connections['ec2'][region]
 
-    def get_ec2_connection(self, resource, region_name=None):
-        if not region_name:
+        return _
+
+    def get_ec2_connection(self, resource="ec2", region=None):
+
+        if not region:
             region = self.region
 
         if resource in self.resource_regional_connection_method_table:
-            return self.aws_connections[region]
-        else:
-            return self.aws_connections[resource][region]
+            _ = self.aws_connections.get(region, None)
 
+            if not _:
+                if self.set_ec2_connection(resource=resource, region=region):
+                    _res = self.aws_connections.get(resource, None)
+                    if _res:
+                        _ = _res.get(region, None)
+            return _
+        else:
+            _ = self.aws_connections[resource].get(region, None)
+            if not _:
+                if self.set_ec2_connection(resource=resource, region=region):
+                    _ = self.aws_connections[resource].get(region, None)
+            return _
 
     # no point in making this a normal property setter, it will usually be called without params
     def set_ec2_connection(self, resource="ec2", ec2_conn=None, region=None, access_key=None, secret_key=None):
-
         # if we were handed a connection object and a region, bind it.
         if ec2_conn and region:
             self.aws_connections[region] = ec2_conn
@@ -136,28 +161,109 @@ class AWSPrivateResource(AWSResource):
             if resource in self.resource_regional_connection_method_table:
                 _conn_method = self.resource_regional_connection_method_table[resource]
                 self.aws_connections[resource][region] = _conn_method(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-
             else:
                 try:
                     _conn_method = self.resource_connection_method_table[resource]
                     self.aws_connections[resource] = _conn_method(aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
                 except KeyError:
-                    self.errors.append("Unknown connection method for %s.  "
-                                       "Check your typing and/or issue a feature request." % resource)
+                    msg = "Unknown connection method for %s.  Check your typing and/or issue a feature request." % resource
+                    log.error(msg)
+                    self.errors.append(msg)
 
             return True
 
         else:
-            self.errors.append("Could not create a connection to EC2.  Missing access/secret key or both.")
+            msg = "Could not create a connection to EC2.  Missing access/secret key or both."
+            log.error(msg)
+            self.errors.append(msg)
             return False
-
 
     # ------------------------------------------------------------------------ #
 
-    def get_all_instance_status(self):
-        statuses = self.ec2_connection.get_all_instance_status()
-        return statuses
+    def get_all_instance_status_objects(self, region=None):
+
+        _result = []
+
+        if not region:
+            region = self.region
+
+        _conn = self.get_ec2_connection(region=self.region)
+
+        if _conn:
+            _result = _conn.get_all_instance_status()
+        if _result:
+            return _result
+        else:
+            msg = "failed to get instance status"
+            log.error(msg)
+            self.errors.append(msg)
+            return False
+
+    def get_all_instance_notifications(self, region=None, denote_completed=True, show_completed=True):
+
+        if not region:
+            region = self.region
+
+        _iso = self.get_all_instance_status_objects(region=region)
+
+        if not _iso:
+            _ = self.get_error_list()
+            self.clear_error_list()
+            return _
+
+        instances_pending_events = dict()
+        for _instance_obj in _iso:
+            if _instance_obj.events:
+
+                instances_pending_events[_instance_obj.id] = dict()
+                _ins_entry = instances_pending_events[_instance_obj.id]
+
+                _ins_entry['zone'] = _instance_obj.zone
+                _ins_entry['instance_status'] = _instance_obj.instance_status
+                _ins_entry['state_code'] = _instance_obj.state_code
+                _ins_entry['state_name'] = _instance_obj.state_name
+
+                _ins_entry['events'] = []
+
+                for _ins_event in _instance_obj.events:
+
+                    _ev = {}
+
+                    _ev['code'] = _ins_event.code
+                    _ev['description'] = _ins_event.description
+                    _ev['not_before'] = _ins_event.not_before
+                    _ev['not_after'] = _ins_event.not_after
+
+                    # parse event description for completed text
+                    bool_completed = bool(re.match('^\[Completed\]', _ins_event.description))
+
+                    _ev['completed'] = bool_completed
+                    if denote_completed:
+                        _ev['not_before'] = "Complete"
+                        _ev['not_after'] = "Complete"
+
+
+                    # todo: a timedelta on the completed time to support a "give me future events and last 48 hours"
+                    # if the event is completed and we've been told not to show completed, continue the iter, skipping
+                    # the append step
+                    if bool_completed and (not show_completed):
+                        continue
+
+                    _ins_entry['events'].append(_ev)
+
+        # grab the ids from the list of the interesting hosts (instance ids are the dict keys)
+        _instance_ids = [ _id for _id in instances_pending_events]
+
+        # Build an attribute lookup table - do 1 call instead of N; grabbing details only on hosts we're interested in.
+        # [Instance:i-123456ab, Instance:i.....]
+        _instance_details = self.get_ec2_connection(region=region).get_only_instances(filters={"instance_id": _instance_ids})
+
+        for _i_obj in _instance_details:
+            # Unless something went really wrong, the instance tags we have should line up.
+            instances_pending_events[_i_obj]['tags'] = _i_obj.tags
+
+        return instances_pending_events
 
 
 class AWSPublicResource:
@@ -300,7 +406,3 @@ class AWSPublicResource:
             _resp["response"] = rt
 
         return _resp
-
-
-def get_all_instance_status():
-    _aws_resource = AWSPrivateResource

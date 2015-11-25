@@ -48,18 +48,16 @@ def aws_status(path):
     private_resource = methods.AWSPrivateResource()
 
     status_endpoint_function_table = {
-        "instance": "x",
-        "instances": "x",
+        "instance_notifications": private_resource.get_all_instance_notifications
     }
 
     if not path:
         _resp = public_resource.get_aws_endpoint_status()
-
         return jsonify(response=_resp)
 
     _function = status_endpoint_function_table.get(path, None)
     if _function:
-        _response = _function
+        _response = _function()
     else:
         _response = ()
 
