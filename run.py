@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from yams import app
 from config import APP
