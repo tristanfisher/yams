@@ -84,7 +84,7 @@ class ThirdParty:
     # You can set ~/.aws/credentials to aws_access_key_id = ${AWS_ACCESS_KEY_ID}, etc.
     AWS_ACCESS_KEY_ID = chain_load_setting("AWS_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID", None)
     AWS_SECRET_ACCESS_KEY = chain_load_setting("AWS_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY", None)
-    AWS_DEFAULT_REGION = 'us-east-1'
+    AWS_DEFAULT_REGION = chain_load_setting("AWS_DEFAULT_REGION", "AWS_DEFAULT_REGION", "us-east-1")
 
 
 class TEST:
