@@ -315,7 +315,7 @@ class AWSPublicResource:
 
         _resp["headers"]["status_code"] = rc
         # not the same as date of response
-        _resp["headers"]["date"] = rheaders.get("last-modified", "")
+        _resp["headers"]["last-modified"] = rheaders.get("last-modified", "")
         _resp["headers"]["etag"] = rheaders.get("etag", "")
 
         # todo: convert date to standard format or return "now"
