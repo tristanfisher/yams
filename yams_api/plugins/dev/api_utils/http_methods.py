@@ -6,10 +6,11 @@ import requests
 HTTPResponse = namedtuple('HTTPResponse', ['headers', 'text', 'status', 'http_2xx', 'status_major_code', 'error'])
 
 
-def http_requests_get_to_dict(url):
+def http_requests_get_to_dict(url, headers={}):
     """Fetch content at a URL, returning a namedtuple of python-request module attributes
 
     :param url: url to scrape
+    :param headers: dict of headers to use for the request
     :return: a namedtuple containing ('headers', 'text', 'status') for Pythonic scripting
     """
 
@@ -20,8 +21,7 @@ def http_requests_get_to_dict(url):
     _status_major_code = 0
 
     try:
-
-        r = requests.get(url)
+        r = requests.get(url, headers=headers)
         # r.content is a bytes obj and probably won't be json serializable.  could return a tuple
         _status = r.status_code
         _str_status = str(_status)
