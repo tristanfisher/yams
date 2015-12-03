@@ -11,8 +11,6 @@ class TestAWSAPI(TestAPIStatus):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.mimetype, 'application/json')
 
-        self.assertEqual(resp.data, b'{\n  "status": "ok"\n}')
-
     # Todo: Exception handling tests
     @unittest.skip('Exceptions not fully implemented. skipping')
     def test_aws_endpoint_server_error(self):
