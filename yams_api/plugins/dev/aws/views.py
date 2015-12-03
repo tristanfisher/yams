@@ -9,7 +9,7 @@ public_resource = methods.AWSPublicResource()
 # todo: show documentation on get to /aws or /aws/
 @dev_bp.route('/aws/')
 def aws():
-    return jsonify(status="ok")
+    return jsonify(response="")
 
 
 @dev_bp.route('/aws/ec2/<resource>')

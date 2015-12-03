@@ -13,7 +13,7 @@ class TestGitHubAPI(TestAPIStatus):
         #self.assertEqual(resp.text, self.expected_status)
 
     def test_github_status_endpoint(self):
-        resp = self.client.get("/plugins/github_status")
+        resp = self.client.get("/plugins/github/status")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.mimetype, 'application/json')
 

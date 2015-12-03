@@ -220,7 +220,14 @@ class AWSPrivateResource(AWSResource):
                 _ins_entry = instances_pending_events[_instance_obj.id]
 
                 _ins_entry['zone'] = _instance_obj.zone
-                _ins_entry['instance_status'] = _instance_obj.instance_status
+
+                _stat = str(_instance_obj.instance_status).split("Status:")
+                if _stat[1]:
+                    _stat = _stat[1]
+                else:
+                    _stat = str(_instance_obj.instance_status)
+
+                _ins_entry['instance_status'] = _stat
                 _ins_entry['state_code'] = _instance_obj.state_code
                 _ins_entry['state_name'] = _instance_obj.state_name
 
@@ -261,7 +268,10 @@ class AWSPrivateResource(AWSResource):
 
         for _i_obj in _instance_details:
             # Unless something went really wrong, the instance tags we have should line up.
-            instances_pending_events[_i_obj]['tags'] = _i_obj.tags
+            instances_pending_events[_i_obj.id]['tags'] = _i_obj.tags
+
+        from pprint import pprint
+        pprint(instances_pending_events)
 
         return instances_pending_events
 
@@ -315,7 +325,7 @@ class AWSPublicResource:
 
         _resp["headers"]["status_code"] = rc
         # not the same as date of response
-        _resp["headers"]["date"] = rheaders.get("last-modified", "")
+        _resp["headers"]["last-modified"] = rheaders.get("last-modified", "")
         _resp["headers"]["etag"] = rheaders.get("etag", "")
 
         # todo: convert date to standard format or return "now"
