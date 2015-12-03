@@ -35,7 +35,7 @@ def get_github_status(url="https://status.github.com/api/status.json"):
     else:
         _resp["status"] = "nok"
 
-    return str(_resp)
+    return _resp
 
 
 if __name__ == "__main__":
