@@ -59,4 +59,4 @@ def get_cloudinary_status(url="http://status.cloudinary.com"):
     else:
         _resp["status"] = "nok"
 
-    return str(_resp)
+    return _resp
