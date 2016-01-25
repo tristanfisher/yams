@@ -14,7 +14,9 @@
 <link href="{{ url_for('static', filename='css/yams.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/yams_custom.css') }}" rel="stylesheet">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<script src="https://fb.me/react-0.13.3.min.js"></script>
+<script src="{{ url_for('static', filename='js/plugins/react/react.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/react/react-dom.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/react/browser.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <title>{{ site_name }}</title>
 {% block head %}{% endblock %}
@@ -40,6 +42,33 @@
 
 <!-- include body -->
 {% block body %}{% endblock %}
+<!--
+panels are templated to display below the body.
+this allows for doing dynamic headers (e.g. help/warning text "this is a live system!" ) above panel inclusion
+-->
+{% block panels %}
+{% if panels %}
+
+<div id="container_panels" class="col-xs-12">
+<script type="text/babel">
+
+{# pass the value through our loader that will convert to a valid json error if invalid, then to raw output #}
+var yams_data = {{ panels|to_json_valid_or_error|safe }};
+
+{# included in panels block so asynchronous/"unordered" loading doesn't affect us #}
+{% from "components/macros.html" import make_panel with context %}
+{% include "components/react_classes.js" %}
+
+{#    {% for _panel in panels %}#}
+    {# pass our panel object to the render feature with the attributes needed to paint appropriately #}
+{#        {{ make_panel(_panel) }}#}
+{#    {% endfor %}#}
+
+</script><!-- panel scriptbox -->
+</div><!-- #container_panels -->
+{% endif %}
+{% endblock panels %}
+
 </div><!-- primary page .container (does not include navbar or footer) -->
 
 <!-- footer (if any) -->
@@ -54,5 +83,6 @@
 <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/jquery-ui-1.11.4/jquery-ui.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!-- yams data-->
 </body>
 </html>

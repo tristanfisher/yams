@@ -52,6 +52,11 @@ body a:link, a:visited, a:hover{
 #page-content {
     /* bootstrap navbar is 50px; */
     margin-top: 50px;
+    width: 100%;
+}
+
+#container_panels{
+    width: 100%;
 }
 
 .footer {
@@ -78,6 +83,10 @@ body a:link, a:visited, a:hover{
 .navbar-default .navbar-nav>li>a:hover{
     background-color: #BFECFC;
     color: #625B63;
+}
+
+.div-inline-first-children > * {
+   display: inline-block;
 }
 
 #brand {
@@ -123,8 +132,16 @@ body a:link, a:visited, a:hover{
     background-color: #625B63;
 }
 
-.bg-light-color{
+.bg-medium-color {
+    background-color: #CFCDD0;
+}
+
+.bg-light-color {
     background-color: #BFECFC;
+}
+
+.bg-very-light-color {
+    background-color: #F0FAFE;
 }
 
 .bg-ok, .btn-success {
@@ -132,6 +149,10 @@ body a:link, a:visited, a:hover{
 }
 
 .bg-warning, .btn-warning {
+    background-color: #FFDE93;
+}
+
+.bg-unknown, .btn-unknown {
     background-color: #FFDE93;
 }
 
@@ -161,4 +182,46 @@ body a:link, a:visited, a:hover{
 .bigcheck2x input[type=checkbox] {
     transform: scale(2);
     -webkit-transform: scale(2);
+}
+
+.disabled {
+    background: #625B63;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+}
+
+/* an entire group of panels */
+.yamsGroup {}
+
+/* a panel of a certain type (e.g. "third party status") */
+.yamsPanel {
+    /* top and bottom */
+    margin: .5em 0 .5em 0;
+}
+
+.yamsPanelLabel {
+    font-size:1.2em;
+}
+
+/* an individual box inside of a panel */
+.yamsBox {
+    border-left: 1px solid #F0FAFE;
+    /*border: 1px solid #BFECFC;*/
+}
+.yamsBoxLabel {}
+
+.yamsBoxLastUpdated {
+    font-size:.5em;
+}
+
+.yamsSubtreeMatchBox{
+    margin-top: .1em;
+}
+
+.yamsSubtreeMatchText{
+    font-size: .75em;
 }

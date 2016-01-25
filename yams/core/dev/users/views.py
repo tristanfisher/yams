@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, render_template
-from yams.app import app
 from yams_api.utils.logger import log
 
 core_users_bp = Blueprint("core_users", __name__, url_prefix="/users")
