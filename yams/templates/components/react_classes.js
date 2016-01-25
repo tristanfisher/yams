@@ -388,12 +388,12 @@ var Box = React.createClass({
             <div className={"yamsBox col-xs-6"}>
                 <div className="yamsBoxLabel">{this.props.label}</div>
 
-                <div className={"bg-" + _status + " div-inline-first-children"}>
+                <div className="div-inline-first-children">
                     <div className="yamsBoxStatusTitle">Status: </div>
-                    <div className={get_status_icon(_status)}></div>
+                    <div className={get_status_icon(_status) + " bg-" + _status}></div>
                 </div>
 
-                <div className={"bg-" + _status + " div-inline-first-children"}>
+                <div className="div-inline-first-children">
                     <div className="yamsBoxDetailTitle">Detail: </div>
                     <div className="">{this.state.detail}</div>
                 </div>
@@ -431,7 +431,9 @@ var Panel = React.createClass({
     render: function(){
         return(
             <div className="yamsPanel row">
-                <div className="yamsPanelLabel bg-light-color">{this.props.label}</div>
+                <div className="yamsPanelLabel">
+                    <div className="yamsPanelLabelText">{this.props.label}</div>
+                </div>
                 <BoxGroup data={this.props.boxes} key={this.props.id} />
                 {this.props.children}
             </div>

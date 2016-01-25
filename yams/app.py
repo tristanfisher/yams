@@ -57,10 +57,12 @@ def load_user(user_id):
 
 navigation_dictionary_list = [
     {"link": "/", "text": "/index", "glyphicon": "glyphicon-home"},
-    {"link": API_HOST, "text": "api", "glyphicon": "glyphicon-cog"},
-    {"link": "", "text": "configure page", "glyphicon": "glyphicon-wrench"},
-    {"link": "", "text": "save dashboard", "glyphicon": "glyphicon-floppy-disk"},
-    {"link": "", "text": "load dashboard", "glyphicon": "glyphicon-open"}
+    # use an image that looks like: {...}
+    {"link": API_HOST, "text": "browse api", "glyphicon": "glyphicon-console"},
+    # search... glyphicon-search
+    # {"link": "", "text": "configure page", "glyphicon": "glyphicon-cog"},
+    # {"link": "", "text": "save dashboard", "glyphicon": "glyphicon-floppy-disk"},
+    # {"link": "", "text": "load dashboard", "glyphicon": "glyphicon-open"}
 ]
 
 # blueprint routes

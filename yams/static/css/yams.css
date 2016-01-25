@@ -17,13 +17,13 @@ body a:link, a:visited, a:hover{
 
 /* navbar hamburger */
 .navbar-default .navbar-toggle .icon-bar {
-    background-color: #BFECFC;
+    background-color: #fff;
 }
 /* navbar hamburger background-color */
 .navbar-toggle {}
 
 /* navbar hamburger when clicked */
-.navbar-default .navbar-toggle:focus { background-color: #BFECFC; }
+.navbar-default .navbar-toggle:focus { background-color: #ccc; }
 .navbar-default .navbar-toggle:focus .icon-bar { color: #625B63; }
 
 @font-face {
@@ -73,15 +73,15 @@ body a:link, a:visited, a:hover{
 }
 
 .a_invert_link a:link, .a_invert_link a:visited, .a_invert_link a:hover{
-    color: #BFECFC;
+    color: #fff;
 }
 
 .navbar-default .navbar-nav>li>a{
-    color: #BFECFC;
+    color: #fff;
 }
 
 .navbar-default .navbar-nav>li>a:hover{
-    background-color: #BFECFC;
+    background-color: #fff;
     color: #625B63;
 }
 
@@ -91,7 +91,7 @@ body a:link, a:visited, a:hover{
 
 #brand {
     background-color: #625B63;
-    color: #BFECFC;
+    color: #fff;
 }
 
 .vcenter {
@@ -200,19 +200,32 @@ body a:link, a:visited, a:hover{
 /* a panel of a certain type (e.g. "third party status") */
 .yamsPanel {
     /* top and bottom */
-    margin: .5em 0 .5em 0;
+    margin: 1em 0 1em 0;
+    padding: .25em 0;
+    /*border-left: .15em solid #625B63;*/
+    background-color: #fcfcfc;
 }
 
 .yamsPanelLabel {
     font-size:1.2em;
+    border-bottom: .15em solid #625B63;
+    /*border-left: .15em solid #625B63;*/
+}
+
+.yamsPanelLabelText {
+    margin-left:.25em;
 }
 
 /* an individual box inside of a panel */
-.yamsBox {
-    border-left: 1px solid #F0FAFE;
-    /*border: 1px solid #BFECFC;*/
-}
+.yamsBox {}
 .yamsBoxLabel {}
+.yamsBoxStatusTitle {
+    margin-right:.25em;
+}
+
+.yamsBoxDetailTitle {
+    margin-right:.25em;
+}
 
 .yamsBoxLastUpdated {
     font-size:.5em;
