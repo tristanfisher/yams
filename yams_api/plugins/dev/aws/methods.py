@@ -391,10 +391,30 @@ class AWSPublicResource:
                         # useful if we drop into a database anyway with timestamp
 
                         # [0] is status icon
+
+                        # the instance status can be strange if the status is "[RESOLVED] issue":
+                        # <td class="bb pad8">
+                        #     <div class="floatLeft">[RESOLVED] Instance Connectivity </div>
+                        #     &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="toggleCurrent(this, 'current_ec2-us-east-1_1452813122_NA');return(false);">more&nbsp;<img src="/images/more.gif"></a>
+                        #     <div class="clear"></div>
+                        #     <div id="current_ec2-us-east-1_1452813122_NA" style="display: none; margin-top: 8px;" class="yellowbg bordered-dark pad8">
+                        #     <div><span class="yellowfg"> 3:13 PM PST</span>&nbsp;We are investigating connectivity issues for some instances in the US-EAST-1 Region.</div><div><span class="yellowfg"> 3:33 PM PST</span>&nbsp;We can confirm connectivity issues when using public IP addresses for some instances within the EC2-Classic network in the US-EAST-1 Region. Connectivity between instances when using private IP addresses is not affected. We continue to work on resolution.</div><div><span class="yellowfg"> 4:00 PM PST</span>&nbsp;We continue to work on resolving the connectivity issues when using public IP addresses for some instances within the EC2-Classic network in the US-EAST-1 Region. For instances with an associated Elastic IP address (EIP), we have confirmed that re-associating the EIP address will restore connectivity. For instances using EC2 provided public IP addresses, associating a new EIP address will restore connectivity.</div><div><span class="yellowfg"> 6:19 PM PST</span>&nbsp; We continue to work on resolving public IP address connectivity for some EC2-Classic instances in the US-EAST-1 Region. We have started to see recovery for some of the affected instances and continue to work towards full recovery.</div><div><span class="yellowfg"> 7:11 PM PST</span>&nbsp;Between 2:26 PM and 7:10 PM PST we experienced connectivity issues when using public IP addresses for some instances within the EC2 Classic network in the US-EAST-1 Region. Connectivity between instances using the private IP address was not affected. The issue has been resolved and the service is operating normally.</div>
+                        #     </div>
+                        # </td>
+
+                        try:
+                            _status = self.aws_current_status_lookup[_r[2].text]
+                        except KeyError:
+                            # probably "\n"
+                            try:
+                                _status = _r[2][0].text
+                            except IndexError:
+                                _status = "ERROR FETCHING STATUS"
+
                         _response_dict[_r[1].text] = {
                             'detail': _r[2].text,
                             'rss': _r[3].getchildren()[0].items()[0][1],
-                            'status': self.aws_current_status_lookup[_r[2].text]
+                            'status': _status
                         }
 
                         # in case it's decidedly cleaner to use .update

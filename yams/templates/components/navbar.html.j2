@@ -17,9 +17,16 @@
         <div class="collapse navbar-collapse light-color" id="collapse-menu">
             <ul class="nav navbar-nav navbar-left">
                 {% if navbar_items %}
-                {% for _nav in navbar_items %}
-                <li><a href="{{ _nav.link }}">{{ _nav.text }}</a></li>
-                {% endfor %}
+                    {% for _nav in navbar_items %}
+                        <li>
+                            <a href="{{ _nav.link|default('/') }}">
+                                {% if _nav.glyphicon %}
+                                <span class="glyphicon {{ _nav.glyphicon }}" aria-hidden="true"></span>
+                                {% endif %}
+                                {{ _nav.text|default('') }}
+                            </a>
+                        </li>
+                    {% endfor %}
                 {% endif %}
             </ul>
         </div>
