@@ -42,23 +42,27 @@ login_manager.anonymous_user = YAMSAnonymousUser
 @login_manager.user_loader
 def load_user():
 
-    # use api_key instead and keep user outside of token?
-    token = request.headers.get('Authorization')
-    if token is None:
-        token = request.args.get('token')
+    # we should be serving static assets from the webserver, but put this in anyway
+    # because hammering the DB or k/v store for N-assets is aggressive
+    if request.endpoint != 'login' and '/static/' not in request.path:
+        print('hooked')
+        # use api_key instead and keep user outside of token?
+        token = request.headers.get('Authorization')
+        if token is None:
+            token = request.args.get('token')
 
-    if token is not None:
-        # todo: decide on token format
-        username, token_hash = token.split(":")
-        yams_user = User(username=username, supplied_token=token_hash)
+        if token is not None:
+            # todo: decide on token format
+            username, token_hash = token.split(":")
+            yams_user = User(username=username, supplied_token=token_hash)
 
-        if yams_user is not None:
-            if yams_user.token_valid():
-                return yams_user
-            else:
-                # token mismatch
-                flash("Credential error. Please clear your cache or log out and try again.  "
-                      "You have been given the permissions of a guest.")
+            if yams_user is not None:
+                if yams_user.token_valid():
+                    return yams_user
+                else:
+                    # token mismatch
+                    flash("Credential error. Please clear your cache or log out and try again.  "
+                          "You have been given the permissions of a guest.")
 
 app.before_request(load_user)
 

@@ -1,1 +1,1 @@
-version="0.2-alpha1"
+version="0.2-nightly-unstable"
