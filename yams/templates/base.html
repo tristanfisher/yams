@@ -53,16 +53,14 @@ this allows for doing dynamic headers (e.g. help/warning text "this is a live sy
 <script type="text/babel">
 
 {# pass the value through our loader that will convert to a valid json error if invalid, then to raw output #}
+var yams_debug_mode = {{ yams_debug_mode|safe }};
+var yams_api_address = "{{ yams_api_address }}";
+var issue_project_tracker = "{{ issue_project_tracker }}";
 var yams_data = {{ panels|to_json_valid_or_error|safe }};
 
 {# included in panels block so asynchronous/"unordered" loading doesn't affect us #}
 {% from "components/macros.html" import make_panel with context %}
 {% include "components/react_classes.js" %}
-
-{#    {% for _panel in panels %}#}
-    {# pass our panel object to the render feature with the attributes needed to paint appropriately #}
-{#        {{ make_panel(_panel) }}#}
-{#    {% endfor %}#}
 
 </script><!-- panel scriptbox -->
 </div><!-- #container_panels -->
@@ -75,7 +73,7 @@ var yams_data = {{ panels|to_json_valid_or_error|safe }};
 <footer class="footer text-center">
   <div class="container">
     {% block footer %}{% endblock footer %}
-    <p class="text-muted footer-engine">powered by yams.  <a href="https://github.com/tristanfisher/yams">view the source</a></p>
+    <p class="text-muted footer-engine">{% if user %}current user: {{ user }}.{% endif %}  application powered by yams.  <a href="https://github.com/tristanfisher/yams">view the source</a></p>
   </div>
 </footer>
 

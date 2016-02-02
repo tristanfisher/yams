@@ -1,83 +1,8 @@
 // React classes we need for component modeling
 // yams_data is available at the time of the class instantiation
 
-var yams_debug_mode = false;
-var yams_api_address = "http://localhost:1111/";
-var issue_project_tracker = "https://github.com/tristanfisher/yams/issues";
-console.debug = console.debug || console.info;
 
-// todo: also work in a "informational only" type of box -- not everything will be up/down
-// todo: allow user specification of what constitutes up/down/warning
-var test_data = [
-    {
-        "id": 1,
-        "label": "amazon",
-        "boxes": [
-            {
-                "id": 1,
-                "label": "api status",
-                "width": "25%",
-                "height": "100%",
-                "data": {
-                    "update_method": {
-                        "interval_seconds": 30, "type": "polling"
-                    },
-                    "endpoint": yams_api_address + "plugins/aws/status",
-                    "data_type": "spot",  // vs series, etc
-                    "field": {"response": {"response": "status"}},
-                    "field_type": "glob_string",
-                    "display_type": "list",
-                    "detail_text_field": {'response': 'response'},
-                },
-                "enabled": 0
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "label": "third parties",
-        "boxes": [
-            {
-                "id": 1,
-                "label": "github status",
-                "width": "25%",
-                "height": "100%",
-                "data": {
-                    "update_method": {
-                        "interval_seconds": 30, "type": "polling"
-                    },
-                    "endpoint": yams_api_address + "plugins/github/status",
-                    "data_type": "spot",
-                    "logic": "boolean",
-                    "field": {"response":"status"},
-                    "field_type": "string",
-                    "display_type": "list",
-                    "detail_text_field": {'response': 'response'},
-                },
-                "enabled": 1
-            },
-            {
-                "id": 2,
-                "label": "dropbox status",
-                "width": "25%",
-                "height": "100%",
-                "data": {
-                    "update_method": {
-                        "interval_seconds": 30, "type": "polling"
-                    },
-                    "endpoint": yams_api_address + "plugins/dropbox/status",
-                    "data_type": "spot",
-                    "logic": "boolean",
-                    "field": {"response":"status"},
-                    "field_type": "string",
-                    "display_type": "list",
-                    "detail_text_field": {'response': 'response'},
-                },
-                "enabled": 1
-            }
-        ]
-    }
-];
+console.debug = console.debug || console.info;
 
 function is_primitive_leaf(node){
     if (node instanceof Object){
@@ -169,7 +94,7 @@ function descend_tree(tree, search_subtree) {
                     if (yams_debug_mode) {
                         console.debug("recursing");
                     }
-                    decend_tree(tree, search_subtree);
+                    descend_tree(tree, search_subtree);
                 }
             }
             else {
@@ -457,11 +382,26 @@ var PanelGroup = React.createClass({
     }
 });
 
+var ErrorPanel = React.createClass({
+    render: function(){
+        return(
+            <div className="yamsGroup text-center">
+                <h2>no data received to render</h2>
+            </div>
+        )
+    }
+});
+
+if (typeof(yams_data !== "undefined")) {
+    var panelgroup_to_render = <PanelGroup data={yams_data}/>;
+} else {
+    var panelgroup_to_render = <ErrorPanel data={yams_data}/>;
+}
+
 /*  List of panels, panels have lists of boxes
     [{panel[0] - box[0], box[1]}, {panel[1] - box[0], box[1], box[2]}]  */
-
 ReactDOM.render(
     // poll for this data later to propagate changes down the model
-    <PanelGroup data={test_data} />,
+    panelgroup_to_render,
     document.getElementById('container_panels')
 );
