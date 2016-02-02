@@ -226,7 +226,7 @@ def index():
                         "display_type": "list",
                         "detail_text_field": {'response': 'response'}
                     },
-                    "enabled": 1
+                    "enabled": 0
                 }
             ]
         },
