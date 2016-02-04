@@ -2,10 +2,12 @@ from flask import Blueprint, jsonify
 from ...errors import ValidationError, bad_request, not_found, unauthorized
 from yams_api.api import api
 from yams_api.utils.logger import log
-# resist the urge to do the glob + load approach from plugins
 
+# resist the urge to do the glob + load approach from plugins -
+# the core endpoints are far more controlled than the plugin endpoints
 core_bp = Blueprint("core", __name__)
-
+from .dashboard import views
+from .user import views
 
 @core_bp.errorhandler(ValidationError)
 def validation_error(e):
@@ -43,3 +45,5 @@ def core_set_endpoints():
 @core_bp.route("/")
 def core_index():
     return jsonify(core_endpoints)
+
+

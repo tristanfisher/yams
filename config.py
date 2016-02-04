@@ -24,8 +24,10 @@ class APP:
 
     LISTEN_HOST = chain_load_setting("APP_HOST", "YAMS_APP_HOST", "127.0.0.1")
     LISTEN_PORT = chain_load_setting("APP_PORT", "YAMS_APP_PORT", default=1110)
+    LISTEN_URL = "http://%s:%s" % (LISTEN_HOST, LISTEN_PORT)
 
-    DEBUG = DEBUG
+    DEBUG = chain_load_setting("DEBUG", "YAMS_DEBUG", True)
+    DEBUG_FRONTEND = chain_load_setting("DEBUG_FRONTEND", "YAMS_DEBUG_FRONTEND", False)
 
     API_VERSION_CORE = chain_load_setting("API_VERSION_CORE", "YAMS_API_VERSION_CORE", default="dev")
     API_VERSION_PLUGINS = chain_load_setting("API_VERSION_PLUGINS", "YAMS_API_VERSION_PLUGINS", default="dev")
@@ -43,7 +45,7 @@ class API:
 
     LISTEN_HOST = chain_load_setting("API_HOST", "YAMS_API_HOST", "127.0.0.1")
     LISTEN_PORT = chain_load_setting("API_PORT", "YAMS_API_PORT", default=1111)
-
+    LISTEN_URL = "http://%s:%s" % (LISTEN_HOST, LISTEN_PORT)
     # ----------------------------------------- #
     # ---- Socket API ---- #
     LISTEN_PORT_SOCKET = chain_load_setting("API_SOCKET_PORT", "YAMS_API_SOCKET_PORT", default=1112)
@@ -57,7 +59,7 @@ class API:
 
     # ----------------------------------------- #
 
-    DEBUG = DEBUG
+    DEBUG = chain_load_setting("DEBUG", "YAMS_API_DEBUG", True)
 
     API_VERSION_CORE = chain_load_setting("API_VERSION_CORE", "YAMS_API_VERSION_CORE", default="dev")
     API_VERSION_PLUGINS = chain_load_setting("API_VERSION_PLUGINS", "YAMS_API_VERSION_PLUGINS", default="dev")

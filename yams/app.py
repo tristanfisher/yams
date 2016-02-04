@@ -15,15 +15,14 @@
 
 from sys import exit
 import os
-from flask import Flask, Blueprint, render_template, g
-from flask import jsonify, redirect, request, url_for
-from flask_login import LoginManager
+from flask import Flask, Blueprint, render_template, g, flash, jsonify, redirect, request, url_for
+from flask_login import LoginManager, UserMixin, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import SETUP, APP, API, PREFERRED_URL_SCHEME
 from yams_api.utils.logger import log
-from collections import namedtuple
-from yams.core.dev.users import methods
+from yams.core.dev.users.methods import User, YAMSAnonymousUser
 from json import loads, dumps
+
 
 API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
 
@@ -38,22 +37,34 @@ app_db = SQLAlchemy(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-Guest = namedtuple('guest_user', ['id', 'name', 'email', 'is_authenticated', 'active'])
+login_manager.anonymous_user = YAMSAnonymousUser
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user():
 
-    guest = Guest(0, 'guest', '', True, True)
+    # we should be serving static assets from the webserver, but put this in anyway
+    # because hammering the DB or k/v store for N-assets is aggressive
+    if request.endpoint != 'login' and '/static/' not in request.path:
+        print('hooked')
+        # use api_key instead and keep user outside of token?
+        token = request.headers.get('Authorization')
+        if token is None:
+            token = request.args.get('token')
 
-    if not user_id:
-        user = guest
-    else:
-        # stub call for what should be sending user info to the API.
-        # user = methods.User.get(user_id)
-        user = None
+        if token is not None:
+            # todo: decide on token format
+            username, token_hash = token.split(":")
+            yams_user = User(username=username, supplied_token=token_hash)
 
-    return user
+            if yams_user is not None:
+                if yams_user.token_valid():
+                    return yams_user
+                else:
+                    # token mismatch
+                    flash("Credential error. Please clear your cache or log out and try again.  "
+                          "You have been given the permissions of a guest.")
+
+app.before_request(load_user)
 
 navigation_dictionary_list = [
     {"link": "/", "text": "/index", "glyphicon": "glyphicon-home"},
@@ -186,28 +197,115 @@ def yams_whoami():
 @app.route('/')
 def index():
 
+    # todo: also work in a "informational only" type of box -- not everything will be up/down
+    # todo: allow user specification of what constitutes up/down/warning
+    yams_debug_mode = dumps(APP.DEBUG_FRONTEND)
+    yams_api_address = API.LISTEN_URL + "/"
+    issue_project_tracker = "https://github.com/tristanfisher/yams/issues"
+
     # this should pull from yaml/json or a datastore
+    #if current_user
+
+    # query the API for our panels
+
+
     user_layout_panels = [
         {
+            "id": 1,
             "label": "amazon",
-            #"height": "",
-            #"width": "100%",
-            #"position": 0,
             "boxes": [
                 {
+                    "id": 1,
                     "label": "api status",
-                    "height": "100%",
                     "width": "25%",
+                    "height": "100%",
                     "data": {
-                        "enabled": 1,
-                        "endpoint": "plugins/aws/status",
-                        "update_method": {"type": "polling", "interval_seconds": 30}
+                        "update_method": {
+                            "interval_seconds": 30, "type": "polling"
+                        },
+                        "endpoint": yams_api_address + "plugins/aws/status",
+                        # vs series, etc
+                        "data_type": "spot",
+                        "field": {"response": {"response": "status"}},
+                        "field_type": "glob_string",
+                        "display_type": "list",
+                        "detail_text_field": {'response': 'response'}
                     },
+                    "enabled": 0
                 }
             ]
+        },
+        {
+            "id": 2,
+            "label": "third parties",
+            "boxes": [
+                {
+                    "id": 1,
+                    "label": "github status",
+                    "width": "25%",
+                    "height": "100%",
+                    "data": {
+                        "update_method": {
+                            "interval_seconds": 30, "type": "polling"
+                        },
+                        "endpoint": yams_api_address + "plugins/github/status",
+                        "data_type": "spot",
+                        "logic": "boolean",
+                        "field": {"response":"status"},
+                        "field_type": "string",
+                        "display_type": "list",
+                        "detail_text_field": {'response': 'response'},
+                    },
+                    "enabled": 1
+                },
+                {
+                    "id": 2,
+                    "label": "dropbox status",
+                    "width": "25%",
+                    "height": "100%",
+                    "data": {
+                        "update_method": {
+                            "interval_seconds": 30, "type": "polling"
+                        },
+                        "endpoint": yams_api_address + "plugins/dropbox/status",
+                        "data_type": "spot",
+                        "logic": "boolean",
+                        "field": {"response":"status"},
+                        "field_type": "string",
+                        "display_type": "list",
+                        "detail_text_field": {'response': 'response'},
+                    },
+                    "enabled": 1
+                },
+                {
+                    "id": 3,
+                    "label": "facebook status",
+                    "width": "25%",
+                    "height": "100%",
+                    "data": {
+                        "update_method": {
+                            "interval_seconds": 30, "type": "polling"
+                        },
+                        "endpoint": yams_api_address + "plugins/facebook/status",
+                        "data_type": "spot",
+                        "logic": "boolean",
+                        "field": {"response":"status"},
+                        "field_type": "string",
+                        "display_type": "list",
+                        "detail_text_field": {'response': 'response'},
+                    },
+                    "enabled": 1
+                },
+            ]
         }
-    ]
+    ];
 
-    # if we don't have a panel, return help.
-
-    return render_template("index.html", panels=user_layout_panels)
+    # todo: if we don't have a panel, return help.
+    # the panels=object is the target of loading from the user's storage.
+    return render_template("index.html",
+                            yams_debug_mode=yams_debug_mode,
+                            yams_api_address=yams_api_address,
+                            issue_project_tracker=issue_project_tracker,
+                            user=current_user.username,
+                            panels=user_layout_panels
+                           )
