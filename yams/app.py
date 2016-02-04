@@ -204,6 +204,11 @@ def index():
     issue_project_tracker = "https://github.com/tristanfisher/yams/issues"
 
     # this should pull from yaml/json or a datastore
+    #if current_user
+
+    # query the API for our panels
+
+
     user_layout_panels = [
         {
             "id": 1,
@@ -271,7 +276,26 @@ def index():
                         "detail_text_field": {'response': 'response'},
                     },
                     "enabled": 1
-                }
+                },
+                {
+                    "id": 3,
+                    "label": "facebook status",
+                    "width": "25%",
+                    "height": "100%",
+                    "data": {
+                        "update_method": {
+                            "interval_seconds": 30, "type": "polling"
+                        },
+                        "endpoint": yams_api_address + "plugins/facebook/status",
+                        "data_type": "spot",
+                        "logic": "boolean",
+                        "field": {"response":"status"},
+                        "field_type": "string",
+                        "display_type": "list",
+                        "detail_text_field": {'response': 'response'},
+                    },
+                    "enabled": 1
+                },
             ]
         }
     ];

@@ -310,7 +310,7 @@ var Box = React.createClass({
 
         // TODO: convert these to React components/classes
         return(
-            <div className={"yamsBox col-xs-6"}>
+            <div className={"yamsBox col-xs-4 col-sm-3"}>
                 <div className="yamsBoxLabel">{this.props.label}</div>
 
                 <div className="div-inline-first-children">

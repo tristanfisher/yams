@@ -43,11 +43,22 @@ def get_cloudinary_status(url="http://status.cloudinary.com"):
         _serv_status = {}
 
         for _service in by_service_status_divs:
-            _inner_div_group = _service.xpath("div[contains(@class, 'component-inner-container')]")[0]
-            _name = _inner_div_group.xpath("span[@class='name']")[0].text.strip()
-            _status = _inner_div_group.xpath("span[@class='component-status']")[0].text.strip()
-            if _status == "Operational":
-                _status = "ok"
+            _inner_div_group = _service.xpath("div[contains(@class, 'component-inner-container')]")
+
+            if _inner_div_group:
+
+                _inner_div_group = _inner_div_group[0]
+                _name = _inner_div_group.xpath("span[@class='name']")[0].text.strip()
+                _status = _inner_div_group.xpath("span[@class='component-status']")[0].text.strip()
+                if _status == "Operational":
+                    _status = "ok"
+
+            else:
+
+                # statuspage.io nested group?
+                # _service_div_contents = str(_service)
+
+                _status = "There was an error parsing a response: %s : %s" % (str(_service), _inner_div_group)
 
             _serv_status[_name] = _status
 
