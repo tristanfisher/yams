@@ -45,7 +45,6 @@ def load_user():
     # we should be serving static assets from the webserver, but put this in anyway
     # because hammering the DB or k/v store for N-assets is aggressive
     if request.endpoint != 'login' and '/static/' not in request.path:
-        print('hooked')
         # use api_key instead and keep user outside of token?
         token = request.headers.get('Authorization')
         if token is None:
