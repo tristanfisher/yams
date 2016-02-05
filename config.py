@@ -137,7 +137,7 @@ JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
 
 # Put some of the structured settings back into the scope of the built-in
-SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI
+#SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI
 DEFAULT_LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 
 # Import the plugin configuration

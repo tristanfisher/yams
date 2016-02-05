@@ -27,7 +27,7 @@ from json import loads, dumps
 API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
 
 app = Flask(__name__)
-app.config.from_object(os.environ.get("FLASK_CONFIG") or "config")
+app.config.from_object("config.APP")
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
 
