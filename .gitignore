@@ -43,6 +43,7 @@ id_dsa
 todo
 todo.txt
 todo.py
+tester.py
 
 # IDEs #
 ######################
@@ -59,6 +60,7 @@ include/
 src/
 env/
 build/
+dist/
 
 # Emacs cruft
 \#*#
@@ -67,5 +69,6 @@ build/
 # YAMS
 yams/static/plugins/custom
 secret_key
+yams.egg-info
 # Ansible
 .vault_pass

@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify
-from yams.app import app
-from yams_api.utils.logger import logfile
+from yams_api.utils.logger import log
 
 # jumper between blueprints
 core_dev_blueprints = []

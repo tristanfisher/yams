@@ -2,6 +2,7 @@
     console.log('<< YAMS : github.com/tristanfisher/yams >>')
 })()
 
+// this currently isn't used 8-dec
 function get_local(success_callback, f){
 
     var script = document.createElement('script');

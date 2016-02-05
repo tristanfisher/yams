@@ -1,32 +1,44 @@
-# YAMS 
+# YAMS
 #### Y(et) A(nother) M(anagement) S(ystem)
 
-
 [![Build Status](https://travis-ci.org/tristanfisher/yams.svg?branch=master)](https://travis-ci.org/tristanfisher/yams)
-
 
 ### What does it do?
 
 YAMS aims to be an easy-to-use extensible interface for maintaining and monitoring system infrastructures.
 
+You can picture its place in your infrastructure in the following way:
 
-### Usage
+![API and web users talking to YAMS. YAMS is a view of data from the API. YAMS API talks to remote APIs and presents a consistent API](https://raw.github.com/tristanfisher/yams/master/yams_architecture.png)
 
-YAMS runs on TCP port 5000 for the web interface and (optionally) TCP port 5001 for the stand-alone API.  Over time, the YAMS front-end will likely depend on the YAMS API running.
 
-While running on the built-in development server is fine for feature development or very small installations, the use of uWSGI and a reverse proxy (such as via nginx) is heavily recommended.
+### Installation
+
+YAMS relies on Python 3.5 and runs on Linux or OS X.  Activate a virtual environment and install the requirements from the requirements.txt.
+
+### Communication
+
+YAMS runs on the following ports:
+
+| Port 	| Transport Protocol 	| Application Protocol 	| Usage           	|
+|------	|--------------------	|----------------------	|-----------------	|
+| 1110 	| TCP                	| HTTP(S)              	| YAMS Frontend   	|
+| 1111 	| TCP                	| HTTP(S)              	| YAMS REST API   	|
+| 1112 	| UDP/TCP            	| YAMS Socket          	| YAMS Socket API 	|
+
+While running on the built-in development server is fine for feature development or very small installations, the use of uWSGI and a reverse proxy (such as via nginx) is heavily recommended.  This is also the preferred method of running YAMS on more predictable ports, such as TCP:443 for the YAMS frontend.
 
 ### Project Layout/Architecture
 
 YAMS is split into two main folders, ***yams-api/*** and ***yams/***.
 
-***yams-api/*** 
+***yams-api/***
 
 The RESTful API component of YAMS.
 
-***yams/*** 
+***yams/***
 
-The front-end management GUI, user dashboard, and web interface of YAMS.  
+The front-end management GUI, user dashboard, and web interface of YAMS.
 
 
 ### Adding Functionality
@@ -35,7 +47,7 @@ To add front-end code, use the `yams/static/plugins/custom` folder.  This is a s
 
 To add back-end code, place a Python module with relevant Flask routes in `yams_api/<< version >>` and name it `views.py`.
 
-e.g. 
+e.g.
 
 `yams_api/dev/github/views.py`:
 
@@ -49,7 +61,7 @@ def github():
 ```
 
 When you restart YAMS (or YAMS API), your `views.py` file will be automagically included.
- 
+
 
 ### Contributing
 
@@ -68,7 +80,7 @@ If the change is large, please make sure that it is well-commented and be patien
 
 #### Documentation
 
-If something is poorly explained and you feel it should be better, please either open a GitHub issue or make a pull request with documentation against the branch that contains the object you're writing about. 
+If something is poorly explained and you feel it should be better, please either open a GitHub issue or make a pull request with documentation against the branch that contains the object you're writing about.
 
 e.g. "user permissions on branch dev" -> dev branch
 
@@ -81,5 +93,5 @@ Please note that all fixes will be rolled forward into newer releases.
 
 
 ---
- 
+
 ######*Tristan Fisher 2015*

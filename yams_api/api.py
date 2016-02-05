@@ -1,12 +1,29 @@
+# This file is part of YAMS.
+#
+# YAMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# YAMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with YAMS.  If not, see <http://www.gnu.org/licenses/>.
+
 from flask import Flask, jsonify
 from config import API
 from .errors import bad_request, not_found, ValidationError
 from flask.ext.sqlalchemy import SQLAlchemy
-
+from flask.ext.cors import CORS
+import os
 
 api = Flask(__name__)
+api.config.from_object("config.API")
 db = SQLAlchemy(api)
-
+CORS(api)
 
 from yams_api.core.dev import core_bp, core_set_endpoints
 from yams_api.plugins.dev import dev_bp, dev_set_endpoints
@@ -36,9 +53,15 @@ def not_found_error(e):
 
 @api.route("/status/")
 def status():
+
+    databases = dict()
+    databases["name"] = api.config.get("SQLALCHEMY_DATABASE_URI", "")
+
     return jsonify(status="ok",
+                   powered_by="yams",
                    api_version_core=API.API_VERSION_CORE,
-                   api_version_api=API.API_VERSION_PLUGINS)
+                   api_version_api=API.API_VERSION_PLUGINS,
+                   databases=databases)
 
 
 ep = []

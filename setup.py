@@ -1,7 +1,7 @@
 import os
 from pip.req import parse_requirements
 
-from config import SETUP
+from version import version
 
 try:
     from setuptools import setup
@@ -11,12 +11,12 @@ except ImportError:
 main_script = "run.py"
 api_script = "run_api.py"
 
-install_requirements = parse_requirements("./requirements.txt")
+install_requirements = parse_requirements("./requirements.txt", session=False)
 install_requirements = [str(ir.req) for ir in install_requirements]
 
 setup(
     name = "yams",
-    version = SETUP.version,
+    version = version,
     author = "Tristan Fisher",
     author_email = "code@tristanfisher.com",
     description = "Yet Another Management System",
