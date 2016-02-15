@@ -23,9 +23,6 @@ from yams_api.utils.logger import log
 from yams.core.dev.users.methods import User, YAMSAnonymousUser
 from json import loads, dumps
 
-
-API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
-
 app = Flask(__name__)
 app.config.from_object("config.APP")
 app.jinja_env.trim_blocks = True
@@ -38,6 +35,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.anonymous_user = YAMSAnonymousUser
+
+API_HOST = "%s://%s:%s" % (PREFERRED_URL_SCHEME, API.LISTEN_HOST, API.LISTEN_PORT)
 
 @login_manager.user_loader
 def load_user():
@@ -205,99 +204,21 @@ def index():
     # this should pull from yaml/json or a datastore
     #if current_user
 
+
+
+
+
+
+
+
+
+
+    # TODO:
     # query the API for our panels
 
 
-    user_layout_panels = [
-        {
-            "id": 1,
-            "label": "amazon",
-            "boxes": [
-                {
-                    "id": 1,
-                    "label": "api status",
-                    "width": "25%",
-                    "height": "100%",
-                    "data": {
-                        "update_method": {
-                            "interval_seconds": 30, "type": "polling"
-                        },
-                        "endpoint": yams_api_address + "plugins/aws/status",
-                        # vs series, etc
-                        "data_type": "spot",
-                        "field": {"response": {"response": "status"}},
-                        "field_type": "glob_string",
-                        "display_type": "list",
-                        "detail_text_field": {'response': 'response'}
-                    },
-                    "enabled": 0
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "label": "third parties",
-            "boxes": [
-                {
-                    "id": 1,
-                    "label": "github status",
-                    "width": "25%",
-                    "height": "100%",
-                    "data": {
-                        "update_method": {
-                            "interval_seconds": 30, "type": "polling"
-                        },
-                        "endpoint": yams_api_address + "plugins/github/status",
-                        "data_type": "spot",
-                        "logic": "boolean",
-                        "field": {"response":"status"},
-                        "field_type": "string",
-                        "display_type": "list",
-                        "detail_text_field": {'response': 'response'},
-                    },
-                    "enabled": 1
-                },
-                {
-                    "id": 2,
-                    "label": "dropbox status",
-                    "width": "25%",
-                    "height": "100%",
-                    "data": {
-                        "update_method": {
-                            "interval_seconds": 30, "type": "polling"
-                        },
-                        "endpoint": yams_api_address + "plugins/dropbox/status",
-                        "data_type": "spot",
-                        "logic": "boolean",
-                        "field": {"response":"status"},
-                        "field_type": "string",
-                        "display_type": "list",
-                        "detail_text_field": {'response': 'response'},
-                    },
-                    "enabled": 1
-                },
-                {
-                    "id": 3,
-                    "label": "facebook status",
-                    "width": "25%",
-                    "height": "100%",
-                    "data": {
-                        "update_method": {
-                            "interval_seconds": 30, "type": "polling"
-                        },
-                        "endpoint": yams_api_address + "plugins/facebook/status",
-                        "data_type": "spot",
-                        "logic": "boolean",
-                        "field": {"response":"status"},
-                        "field_type": "string",
-                        "display_type": "list",
-                        "detail_text_field": {'response': 'response'},
-                    },
-                    "enabled": 1
-                },
-            ]
-        }
-    ];
+
+    user_layout_panels=None
 
     # todo: if we don't have a panel, return help.
     # the panels=object is the target of loading from the user's storage.

@@ -14,6 +14,9 @@ for _p in (_this_dir, _parent_dir):
 
 from config import API, APP
 
+# Bind some vars for our migrations to use for environmental setup
+API_URL_WITH_SLASH = API.LISTEN_URL + "/"
+
 #
 # n.b. this is only currently doing API migrations
 #

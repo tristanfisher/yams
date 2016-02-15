@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+    <h2>Create an account</h2>
+    </div>
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <form action="{{ url_for('.user_account_login') }}" method="POST">
+            <p>{{ form.first_name.label }}:</p>
+            <p>{{ form.first_name }}</p>
+            <p>{{ form.email.label }}:</p>
+            <p>{{ form.email(placeholder='e-mail@example.org') }}<p>
+            <p>{{ form.password.label }}:</p>
+            <p>{{ form.password }}</p>
+            {{ form.csrf_token }}
+            <input class="btn-success" type="submit" value="Login">
+        </form>
+    </div>
+</div>
+{% endblock body %}
+
