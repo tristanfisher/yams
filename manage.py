@@ -10,7 +10,6 @@ except ImportError as e:
 from config import APP
 from yams.app import app
 manager_app = Manager(app)
-
 from manage_api import manager_api
 from manage_database import manager_database
 
@@ -21,6 +20,16 @@ app.jinja_env.lstrip_blocks = True
 
 manager_app.add_command(
     "run",
+    Server(
+        use_debugger=APP.DEBUG,
+        use_reloader=APP.DEBUG,
+        host=APP.LISTEN_HOST,
+        port=APP.LISTEN_PORT
+    )
+)
+
+manager_app.add_command(
+    "runserver",
     Server(
         use_debugger=APP.DEBUG,
         use_reloader=APP.DEBUG,

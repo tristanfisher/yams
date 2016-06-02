@@ -1,31 +1,27 @@
-import os
 from flask.ext.script import Manager, Server
-from yams_api import api
+from yams_api.api import api
 from config import API
 
-api.config.from_object(os.environ.get("FLASK_API_CONFIG") or "config")
-api.jinja_env.trim_blocks = True
-api.jinja_env.lstrip_blocks = True
+api.config.from_object(API)
+#manager_api = Manager(api, usage="API Management")
+manager_api = Manager(api)
 
-manager_api = Manager(api, usage="API Management")
+
+# using the flask-script Server() command was binding to the wrong Flask instance.
+# this server only gets used for dev/testing, so this is 'fine'
+def run_api():
+    api.run(
+        debug=API.DEBUG,
+        host=API.LISTEN_HOST,
+        port=API.LISTEN_PORT
+    )
+
 
 # todo: once the socket API changes are public, make this default to starting that as well
-manager_api.add_command(
-    "run",
-    Server(
-        use_debugger=API.DEBUG,
-        use_reloader=API.DEBUG,
-        host=API.LISTEN_HOST,
-        port=API.LISTEN_PORT
-    ),
-)
+@manager_api.command
+def run():
+    run_api()
 
-manager_api.add_command(
-    "run_http_only",
-    Server(
-        use_debugger=API.DEBUG,
-        use_reloader=API.DEBUG,
-        host=API.LISTEN_HOST,
-        port=API.LISTEN_PORT
-    ),
-)
+@manager_api.command
+def run_http_only():
+    run_api()

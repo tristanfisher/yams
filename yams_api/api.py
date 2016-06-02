@@ -14,11 +14,12 @@
 # along with YAMS.  If not, see <http://www.gnu.org/licenses/>.
 
 from flask import Flask, jsonify
-from config import API
+from config import API, SECRET_KEY
+yams_api_conf = API
+api_secret_key = SECRET_KEY
 from .errors import bad_request, not_found, ValidationError
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.cors import CORS
-import os
 
 api = Flask(__name__)
 api.config.from_object("config.API")
@@ -31,6 +32,7 @@ api.register_blueprint(dev_bp, url_prefix="/plugins")
 api.register_blueprint(core_bp, url_prefix="/core")
 dev_set_endpoints()
 core_set_endpoints()
+
 
 #
 # n.b. the core api is versioned. refrain from adding endpoints

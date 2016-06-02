@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="row">
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+<h2>Confirmed!</h2>
+</div>
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+Your account was successfully created.  Please click on the link below to confirm your e-mail address:
+
+<p><a href="{{ account_confirm_url }}">{{ account_confirm_url }}</a></p>
+</div>
+
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+Please note that you will need to confirm your account to use the advanced features of this site.
+</div>
+</div>
+{% endblock body %}
+

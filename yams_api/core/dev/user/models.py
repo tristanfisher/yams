@@ -63,11 +63,16 @@ class User(BaseUser):
     google_handle = db.Column(db.String(100))
     email_address = db.Column(db.String(255), unique=True)
 
+
+    email_confirmed = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return "<User %r : %r %r>" % self.id, self.email_address, self.active
+
+    def set_password(self):
+        pass
 
 
 class Group(BaseUser):

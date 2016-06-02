@@ -1,11 +1,26 @@
 from __future__ import with_statement
+import os
+import sys
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
+
+# We need to go back a dir to get the config.
+_this_dir = os.path.dirname((os.path.abspath(__file__)))
+_parent_dir = os.path.join(_this_dir, '../')
+for _p in (_this_dir, _parent_dir):
+    if _p not in sys.path:
+        sys.path.append(_p)
+
 from config import API, APP
 
-app_db_uri = APP.SQLALCHEMY_DATABASE_URI
-api_db_uri = API.SQLALCHEMY_DATABASE_URI
+# Bind some vars for our migrations to use for environmental setup
+API_URL_WITH_SLASH = API.LISTEN_URL + "/"
+
+#
+# n.b. this is only currently doing API migrations
+#
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -25,7 +40,19 @@ target_metadata = None
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+def merged_ini_py_conf():
+    """Update some settings that would be fetched from the ini with those from our
+     application config.
+    this could maybe be cleaner with some clever .setdefault('key', default_value)
+    :return: merged settings dict
+    """
 
+    conf = config.get_section(config.config_ini_section)
+
+    if hasattr(API, 'SQLALCHEMY_DATABASE_URI'):
+        conf['sqlalchemy.url'] = API.SQLALCHEMY_DATABASE_URI
+
+    return conf
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
@@ -39,9 +66,11 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True)
+        url=merged_ini_py_conf().get('sqlalchemy.url'),
+        target_metadata=target_metadata,
+        literal_binds=True
+    )
 
     with context.begin_transaction():
         context.run_migrations()
@@ -54,8 +83,9 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
+
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
+        merged_ini_py_conf(),
         prefix='sqlalchemy.',
         poolclass=pool.NullPool)
 

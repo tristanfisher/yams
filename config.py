@@ -16,7 +16,8 @@ DEBUG = True if easyos["os"] == "Darwin" else False
 # Namespaced vars
 
 
-class Internal():
+class Internal:
+    ALLOWED_USER_DOMAINS = chain_load_setting("ALLOWED_USER_DOMAINS", "YAMS_ALLOWED_USER_DOMAINS", ["*"])
     TRUSTED_PROXIES = {"127.0.0.1"}
 
 
@@ -122,6 +123,7 @@ def return_or_make_secret_key(secret_key_file):
             f.write(_rand)
             return f.read()
 
+# when it comes time to separate the API completely from the APP, assign a different secret_key to the api and to the app.
 SECRET_KEY = return_or_make_secret_key(basedir + "/secret_key")
 SESSION_COOKIE_NAME = "yams_session"
 
@@ -137,7 +139,6 @@ JSON_AS_ASCII = False
 JSONIFY_PRETTYPRINT_REGULAR = not DEBUG
 
 # Put some of the structured settings back into the scope of the built-in
-#SQLALCHEMY_DATABASE_URI = APP.SQLALCHEMY_DATABASE_URI
 DEFAULT_LOG_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 
 # Import the plugin configuration

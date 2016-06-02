@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block body %}
-<div class="container">
-
+<div class="row">
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+<h2>Users</h2>
+</div>
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+{% for _user in users %}
+{{ _user }}
+{% endfor %}
+</div>
 </div>
 {% endblock body %}
 
