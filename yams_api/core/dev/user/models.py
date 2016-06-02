@@ -1,20 +1,10 @@
 from datetime import datetime
-from enum import Enum
 from yams_api.api import db
+from yams_api.core.dev.utils import UnixPermission, unix_permission_list
 
 # try to use Flask-SQLAlchemy before heading down this path:
 #from sqlalchemy.ext.declarative import declarative_base
 #Base = declarative_base()
-
-
-class UnixPermission(Enum):
-    READ = 1
-    WRITE = 2
-    EXECUTE = 4
-    NONE = 0
-    READ_WRITE = READ + WRITE
-    READ_EXECUTE = READ + EXECUTE
-    ALL = READ + WRITE + EXECUTE
 
 # users have multiple groups, groups can have multiple people
 uid_gid_association = db.Table(
@@ -52,7 +42,8 @@ class Role(BaseUser):
     # if not otherwise stated on the target resource. e.g. monitoring users would be implicit UnixPermission.READ
     # this is here to act like a mask -- so we can prevent a "demo users" Role from being able to write changes to
     # and endpoint that someone forgot to lock down.
-    implicit_access = db.Column(db.Enum(UnixPermission), default=UnixPermission.READ)
+    # mysql doesn't support checkconstraints, so just use int.
+    implicit_access = db.Column(db.Integer, default=UnixPermission.READ.value)
     super_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):

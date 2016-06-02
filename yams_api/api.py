@@ -21,7 +21,7 @@ from flask.ext.cors import CORS
 import os
 
 api = Flask(__name__)
-api.config.from_object(os.environ.get("FLASK_API_CONFIG" or "config"))
+api.config.from_object("config.API")
 db = SQLAlchemy(api)
 CORS(api)
 

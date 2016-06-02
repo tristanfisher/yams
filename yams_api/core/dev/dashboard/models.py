@@ -1,17 +1,7 @@
 from datetime import datetime
 from yams_api.api import db
 from sqlalchemy.ext.declarative import declared_attr
-
-from enum import Enum
-class UnixPermission(Enum):
-    READ = 1
-    WRITE = 2
-    EXECUTE = 4
-    NONE = 0
-    READ_WRITE = READ + WRITE
-    READ_EXECUTE = READ + EXECUTE
-    ALL = READ + WRITE + EXECUTE
-
+from yams_api.core.dev.utils import UnixPermission, unix_permission_list
 
 # display is currently:
 
@@ -47,9 +37,10 @@ class BaseDashboardUnit(db.Model):
     def owner_group_id(cls):
         return db.Column(db.Integer, db.ForeignKey("group.id"))
 
-    permission_user = db.Column(db.Enum(UnixPermission), default=UnixPermission.READ_WRITE)
-    permission_group = db.Column(db.Enum(UnixPermission), default=UnixPermission.READ)
-    permission_other = db.Column(db.Enum(UnixPermission), default=UnixPermission.NONE)
+    # mysql doesn't support checkconstraints, so just use int.
+    permission_user = db.Column(db.Integer, default=UnixPermission.READ_WRITE.value)
+    permission_group = db.Column(db.Integer, default=UnixPermission.READ.value)
+    permission_other = db.Column(db.Integer, default=UnixPermission.NONE.value)
 
     # if the panel is private and there's a user_id, it shouldn't be available to other users
     user_id = db.Column("user_id", db.Integer, default=0)
